@@ -1,0 +1,6 @@
+@CarbonWise.Api_HostAddress = http://localhost:5070
+
+GET {{CarbonWise.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
