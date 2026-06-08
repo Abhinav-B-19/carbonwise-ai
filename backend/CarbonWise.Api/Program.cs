@@ -1,4 +1,6 @@
 using CarbonWise.Api.Data;
+using CarbonWise.Api.Services.Implementations;
+using CarbonWise.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,9 @@ builder.Services.AddDbContext<CarbonWiseDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICarbonCalculationService, CarbonCalculationService>();
 
 var app = builder.Build();
 
