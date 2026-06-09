@@ -20,6 +20,7 @@ builder.Services.AddDbContext<CarbonWiseDbContext>(options =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICarbonCalculationService, CarbonCalculationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IGoalService, GoalService>();
 
 var app = builder.Build();
 
