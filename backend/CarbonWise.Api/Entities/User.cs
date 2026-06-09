@@ -21,4 +21,6 @@ public class User
 
     public ICollection<Goal> Goals { get; set; }
         = new List<Goal>();
+
+    public int GreenPoints { get; set; }
 }

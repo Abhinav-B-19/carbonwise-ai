@@ -26,6 +26,7 @@ builder.Services.AddScoped<IGoalService, GoalService>();
 builder.Services.AddScoped<IChallengeService, ChallengeService>();
 builder.Services.AddScoped<IAiCoachService, AiCoachService>();
 builder.Services.AddScoped<IScenarioService, ScenarioService>();
+builder.Services.AddScoped<IGamificationService, GamificationService>();
 
 var app = builder.Build();
 

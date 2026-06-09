@@ -28,6 +28,8 @@ public class CarbonWiseDbContext : DbContext
     public DbSet<DailyChallengeAssignment> DailyChallengeAssignments
         => Set<DailyChallengeAssignment>();
 
+    public DbSet<UserAchievement> UserAchievements => Set<UserAchievement>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
