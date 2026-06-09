@@ -30,11 +30,14 @@ builder.Services.AddScoped<IGamificationService, GamificationService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.SwaggerEndpoint(
+        "/swagger/v1/swagger.json",
+        "CarbonWise API v1");
+});
 
 if (!app.Environment.IsProduction())
 {
