@@ -11,6 +11,8 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddHttpClient();
+
 builder.Services.AddDbContext<CarbonWiseDbContext>(options =>
 {
     options.UseNpgsql(
@@ -23,6 +25,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IGoalService, GoalService>();
 builder.Services.AddScoped<IChallengeService, ChallengeService>();
 builder.Services.AddScoped<IAiCoachService, AiCoachService>();
+builder.Services.AddScoped<IScenarioService, ScenarioService>();
 
 var app = builder.Build();
 
