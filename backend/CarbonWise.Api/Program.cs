@@ -21,6 +21,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICarbonCalculationService, CarbonCalculationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IGoalService, GoalService>();
+builder.Services.AddScoped<IChallengeService, ChallengeService>();
 
 var app = builder.Build();
 

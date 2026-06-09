@@ -11,4 +11,6 @@ public class DailyChallengeAssignment
     public DateOnly AssignedDate { get; set; }
 
     public bool Completed { get; set; }
+
+    public DateTime? CompletedAt { get; set; }
 }
