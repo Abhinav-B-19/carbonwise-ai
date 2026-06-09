@@ -13,6 +13,17 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddDbContext<CarbonWiseDbContext>(options =>
 {
     options.UseNpgsql(
@@ -39,10 +50,9 @@ app.UseSwaggerUI(options =>
         "CarbonWise API v1");
 });
 
-if (!app.Environment.IsProduction())
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
+
+app.UseCors("Frontend");
 
 app.MapControllers();
 
