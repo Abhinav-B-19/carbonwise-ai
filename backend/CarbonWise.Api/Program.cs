@@ -22,6 +22,7 @@ builder.Services.AddScoped<ICarbonCalculationService, CarbonCalculationService>(
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IGoalService, GoalService>();
 builder.Services.AddScoped<IChallengeService, ChallengeService>();
+builder.Services.AddScoped<IAiCoachService, AiCoachService>();
 
 var app = builder.Build();
 
