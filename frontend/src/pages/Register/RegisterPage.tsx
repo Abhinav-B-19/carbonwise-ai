@@ -46,9 +46,6 @@ export default function RegisterPage() {
     } catch (error: any) {
         console.error("Registration Error:", error);
       
-        console.log(error?.response);
-        console.log(error?.response?.data);
-      
         alert(
           JSON.stringify(
             error?.response?.data ??
