@@ -1,14 +1,26 @@
 import {
-    LayoutDashboard,
-    Calculator,
-    Target,
-    Award,
-  } from "lucide-react";
-  
-  import { NavLink } from "react-router-dom";
-  
-  export default function MobileBottomNav() {
-    return (
+  useState,
+} from "react";
+
+import {
+  LayoutDashboard,
+  Calculator,
+  Target,
+  Menu,
+} from "lucide-react";
+
+import {
+  NavLink,
+} from "react-router-dom";
+
+import MobileMenu from "./MobileMenu";
+
+export default function MobileBottomNav() {
+  const [open, setOpen] =
+    useState(false);
+
+  return (
+    <>
       <div
         className="
         lg:hidden
@@ -22,18 +34,20 @@ import {
         flex
         justify-around
         py-3
-        z-50
+        z-40
         "
       >
         <NavLink
           to="/dashboard"
-          className={({ isActive }) =>
+          className={({
+            isActive,
+          }) =>
             `
             flex
             flex-col
             items-center
             text-xs
-  
+
             ${
               isActive
                 ? "text-green-600"
@@ -42,19 +56,24 @@ import {
             `
           }
         >
-          <LayoutDashboard size={20} />
+          <LayoutDashboard
+            size={20}
+          />
+
           Dashboard
         </NavLink>
-  
+
         <NavLink
           to="/calculator"
-          className={({ isActive }) =>
+          className={({
+            isActive,
+          }) =>
             `
             flex
             flex-col
             items-center
             text-xs
-  
+
             ${
               isActive
                 ? "text-green-600"
@@ -63,19 +82,24 @@ import {
             `
           }
         >
-          <Calculator size={20} />
+          <Calculator
+            size={20}
+          />
+
           Calculator
         </NavLink>
-  
+
         <NavLink
           to="/goals"
-          className={({ isActive }) =>
+          className={({
+            isActive,
+          }) =>
             `
             flex
             flex-col
             items-center
             text-xs
-  
+
             ${
               isActive
                 ? "text-green-600"
@@ -84,30 +108,39 @@ import {
             `
           }
         >
-          <Target size={20} />
+          <Target
+            size={20}
+          />
+
           Goals
         </NavLink>
-  
-        <NavLink
-          to="/gamification"
-          className={({ isActive }) =>
-            `
-            flex
-            flex-col
-            items-center
-            text-xs
-  
-            ${
-              isActive
-                ? "text-green-600"
-                : "text-slate-500"
-            }
-            `
+
+        <button
+          onClick={() =>
+            setOpen(true)
           }
+          className="
+          flex
+          flex-col
+          items-center
+          text-xs
+          text-slate-500
+          "
         >
-          <Award size={20} />
-          Rewards
-        </NavLink>
+          <Menu
+            size={20}
+          />
+
+          More
+        </button>
       </div>
-    );
-  }
+
+      <MobileMenu
+        open={open}
+        onClose={() =>
+          setOpen(false)
+        }
+      />
+    </>
+  );
+}
