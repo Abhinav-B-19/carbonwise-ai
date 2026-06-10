@@ -334,7 +334,7 @@ Users earn:
 
 Frontend:
 
-https://carbonwise-v5p9fairo-abhinav-b-19s-projects.vercel.app
+https://carbonwise-ai-lime.vercel.app
 
 Backend API:
 
