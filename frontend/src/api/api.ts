@@ -2,9 +2,10 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL:
-    "https://carbonwise-ai-44hh.onrender.com",
+    import.meta.env.VITE_API_URL,
   headers: {
-    "Content-Type": "application/json",
+    "Content-Type":
+      "application/json",
   },
 });
 
