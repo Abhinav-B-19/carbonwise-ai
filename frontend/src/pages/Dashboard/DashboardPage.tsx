@@ -7,12 +7,32 @@ import EmissionTrendChart from "../../components/charts/EmissionTrendChart";
 import ScoreTrendChart from "../../components/charts/ScoreTrendChart";
 
 import api from "../../api/api";
-import { getUserKey } from "../../services/localStorage";
+
+import {
+  getUserKey,
+} from "../../services/localStorage";
+
+interface GamificationResponse {
+  greenPoints: number;
+  currentStreak: number;
+  level: string;
+  achievements: string[];
+}
 
 export default function DashboardPage() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] =
+    useState<any>(null);
 
-  const [history, setHistory] = useState<any[]>([]);
+  const [history, setHistory] =
+    useState<any[]>([]);
+
+  const [gamification, setGamification] =
+    useState<GamificationResponse>({
+      greenPoints: 0,
+      currentStreak: 0,
+      level: "",
+      achievements: [],
+    });
 
   const [loading, setLoading] =
     useState(true);
@@ -26,35 +46,49 @@ export default function DashboardPage() {
     loadDashboard();
   }, []);
 
-  const loadDashboard = async () => {
-    try {
-      const userKey = getUserKey();
+  const loadDashboard =
+    async () => {
+      try {
+        const userKey =
+          getUserKey();
 
-      if (!userKey) return;
+        if (!userKey) return;
 
-      const dashboardResponse =
-        await api.get(
-          `/api/dashboard?userKey=${userKey}`
+        const [
+          dashboardResponse,
+          historyResponse,
+          gamificationResponse,
+        ] = await Promise.all([
+          api.get(
+            `/api/dashboard?userKey=${userKey}`
+          ),
+
+          api.get(
+            `/api/carbon/history?userKey=${userKey}`
+          ),
+
+          api.get(
+            `/api/gamification?userKey=${userKey}`
+          ),
+        ]);
+
+        setData(
+          dashboardResponse.data
         );
 
-      const historyResponse =
-        await api.get(
-          `/api/carbon/history?userKey=${userKey}`
+        setHistory(
+          historyResponse.data || []
         );
 
-      setData(
-        dashboardResponse.data
-      );
-
-      setHistory(
-        historyResponse.data || []
-      );
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setGamification(
+          gamificationResponse.data
+        );
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
   const getLevel = (
     score: number
@@ -96,8 +130,22 @@ export default function DashboardPage() {
     return (
       <DashboardLayout>
         <PageContainer>
-          <div className="py-10">
-            Loading Dashboard...
+          <div
+            className="
+            flex
+            items-center
+            justify-center
+            h-[60vh]
+            "
+          >
+            <div
+              className="
+              text-xl
+              font-semibold
+              "
+            >
+              Loading Dashboard...
+            </div>
           </div>
         </PageContainer>
       </DashboardLayout>
@@ -148,27 +196,27 @@ export default function DashboardPage() {
               "
             >
               Track your sustainability
-              progress and reduce your
-              carbon footprint.
+              journey and achieve your
+              eco goals.
             </p>
 
             <div
               className="
               mt-8
               grid
-              grid-cols-1
-              md:grid-cols-3
+              grid-cols-2
+              lg:grid-cols-5
               gap-6
               "
             >
               <div>
                 <p className="text-green-100">
-                  Current Score
+                  Carbon Score
                 </p>
 
                 <h2
                   className="
-                  text-5xl
+                  text-4xl
                   font-bold
                   "
                 >
@@ -178,16 +226,51 @@ export default function DashboardPage() {
 
               <div>
                 <p className="text-green-100">
-                  Sustainability Level
+                  Level
                 </p>
 
                 <h2
                   className="
-                  text-3xl
+                  text-2xl
                   font-bold
                   "
                 >
-                  {getLevel(score)}
+                  {gamification.level ||
+                    getLevel(score)}
+                </h2>
+              </div>
+
+              <div>
+                <p className="text-green-100">
+                  Green Points
+                </p>
+
+                <h2
+                  className="
+                  text-4xl
+                  font-bold
+                  "
+                >
+                  {
+                    gamification.greenPoints
+                  }
+                </h2>
+              </div>
+
+              <div>
+                <p className="text-green-100">
+                  Streak
+                </p>
+
+                <h2
+                  className="
+                  text-4xl
+                  font-bold
+                  "
+                >
+                  {
+                    gamification.currentStreak
+                  }
                 </h2>
               </div>
 
@@ -198,17 +281,19 @@ export default function DashboardPage() {
 
                 <h2
                   className="
-                  text-5xl
+                  text-4xl
                   font-bold
                   "
                 >
-                  {data?.totalCalculations ?? 0}
+                  {
+                    data?.totalCalculations
+                  }
                 </h2>
               </div>
             </div>
           </div>
 
-          {/* METRIC CARDS */}
+          {/* METRICS */}
 
           <div
             className="
@@ -220,7 +305,6 @@ export default function DashboardPage() {
             mb-8
             "
           >
-
             <div
               className="
               bg-white
@@ -241,14 +325,15 @@ export default function DashboardPage() {
                 mt-2
                 "
               >
-                {data?.averageEmission ?? 0}
+                {(
+                  data?.averageEmission ?? 0
+                ).toFixed(2)}
               </h2>
 
               <p
                 className="
                 text-sm
                 text-slate-500
-                mt-1
                 "
               >
                 kg CO₂e
@@ -275,14 +360,15 @@ export default function DashboardPage() {
                 mt-2
                 "
               >
-                {data?.latestEmission ?? 0}
+                {(
+                  data?.latestEmission ?? 0
+                ).toFixed(2)}
               </h2>
 
               <p
                 className="
                 text-sm
                 text-slate-500
-                mt-1
                 "
               >
                 kg CO₂e
@@ -347,7 +433,6 @@ export default function DashboardPage() {
                 {getLevel(score)}
               </p>
             </div>
-
           </div>
 
           {/* CHARTS */}
@@ -359,6 +444,7 @@ export default function DashboardPage() {
               grid-cols-1
               xl:grid-cols-2
               gap-6
+              mb-8
               "
             >
               <EmissionTrendChart
@@ -368,6 +454,58 @@ export default function DashboardPage() {
               <ScoreTrendChart
                 data={history}
               />
+            </div>
+          )}
+
+          {/* ACHIEVEMENTS */}
+
+          {gamification.achievements
+            .length > 0 && (
+            <div
+              className="
+              bg-white
+              rounded-2xl
+              p-6
+              shadow-sm
+              border
+              "
+            >
+              <h2
+                className="
+                text-2xl
+                font-bold
+                mb-4
+                "
+              >
+                🏅 Recent Achievements
+              </h2>
+
+              <div className="space-y-3">
+
+                {gamification.achievements
+                  .slice(0, 5)
+                  .map(
+                    (
+                      achievement,
+                      index
+                    ) => (
+                      <div
+                        key={index}
+                        className="
+                        bg-green-50
+                        border
+                        border-green-200
+                        rounded-xl
+                        p-4
+                        text-green-700
+                        "
+                      >
+                        ✅ {achievement}
+                      </div>
+                    )
+                  )}
+
+              </div>
             </div>
           )}
 
