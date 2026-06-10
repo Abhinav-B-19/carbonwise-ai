@@ -27,11 +27,10 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("validate")]
-    public async Task<IActionResult> Validate()
+    public async Task<IActionResult> Validate(
+        [FromHeader(Name = "X-User-Key")]
+        string userKey)
     {
-        var userKey =
-            Request.Headers["X-User-Key"].ToString();
-
         if (string.IsNullOrWhiteSpace(userKey))
         {
             return BadRequest(
@@ -39,17 +38,17 @@ public class UsersController : ControllerBase
         }
 
         var result =
-            await _userService.ValidateUserAsync(userKey);
+            await _userService.ValidateUserAsync(
+                userKey);
 
         return Ok(result);
     }
 
     [HttpGet("profile")]
-    public async Task<IActionResult> Profile()
+    public async Task<IActionResult> Profile(
+        [FromHeader(Name = "X-User-Key")]
+        string userKey)
     {
-        var userKey =
-            Request.Headers["X-User-Key"].ToString();
-
         if (string.IsNullOrWhiteSpace(userKey))
         {
             return BadRequest(
@@ -57,7 +56,8 @@ public class UsersController : ControllerBase
         }
 
         var profile =
-            await _userService.GetProfileAsync(userKey);
+            await _userService.GetProfileAsync(
+                userKey);
 
         if (profile == null)
         {
