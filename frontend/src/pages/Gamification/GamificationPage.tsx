@@ -22,24 +22,49 @@ import {
   
     const loadGamification =
       async () => {
-        const userKey =
-          getUserKey();
+        try {
+          const userKey =
+            getUserKey();
   
-        const response =
-          await api.get(
-            `/api/gamification?userKey=${userKey}`
+          const response =
+            await api.get(
+              `/api/gamification?userKey=${userKey}`
+            );
+  
+          setData(
+            response.data
           );
+        } catch (error) {
+          console.error(
+            "Failed to load gamification",
+            error
+          );
+        }
+      };
   
-        setData(
-          response.data
-        );
+    const getLevelDisplay =
+      (level: string) => {
+        switch (
+          level?.toLowerCase()
+        ) {
+          case "eco champion":
+            return `🏆 ${level}`;
+  
+          case "green advocate":
+            return `🌿 ${level}`;
+  
+          default:
+            return `🌱 ${level}`;
+        }
       };
   
     if (!data) {
       return (
         <DashboardLayout>
           <PageContainer>
-            Loading...
+            <div className="py-10">
+              Loading Rewards...
+            </div>
           </PageContainer>
         </DashboardLayout>
       );
@@ -50,6 +75,8 @@ import {
         <PageContainer>
   
           <div className="py-8">
+  
+            {/* HERO */}
   
             <div
               className="
@@ -78,11 +105,14 @@ import {
               </p>
             </div>
   
+            {/* STATS */}
+  
             <div
               className="
               grid
               grid-cols-1
-              md:grid-cols-3
+              md:grid-cols-2
+              xl:grid-cols-4
               gap-6
               mb-8
               "
@@ -93,6 +123,8 @@ import {
                 rounded-2xl
                 p-6
                 shadow-sm
+                border
+                border-slate-200
                 "
               >
                 <p className="text-slate-500">
@@ -116,6 +148,8 @@ import {
                 rounded-2xl
                 p-6
                 shadow-sm
+                border
+                border-slate-200
                 "
               >
                 <p className="text-slate-500">
@@ -131,6 +165,16 @@ import {
                 >
                   {data.currentStreak}
                 </h2>
+  
+                <p
+                  className="
+                  text-sm
+                  text-slate-500
+                  mt-1
+                  "
+                >
+                  Days
+                </p>
               </div>
   
               <div
@@ -139,6 +183,8 @@ import {
                 rounded-2xl
                 p-6
                 shadow-sm
+                border
+                border-slate-200
                 "
               >
                 <p className="text-slate-500">
@@ -147,15 +193,46 @@ import {
   
                 <h2
                   className="
-                  text-3xl
+                  text-2xl
                   font-bold
                   text-purple-600
                   "
                 >
-                  {data.level}
+                  {getLevelDisplay(
+                    data.level
+                  )}
+                </h2>
+              </div>
+  
+              <div
+                className="
+                bg-white
+                rounded-2xl
+                p-6
+                shadow-sm
+                border
+                border-slate-200
+                "
+              >
+                <p className="text-slate-500">
+                  Achievements
+                </p>
+  
+                <h2
+                  className="
+                  text-4xl
+                  font-bold
+                  text-blue-600
+                  "
+                >
+                  {data
+                    .achievements
+                    ?.length ?? 0}
                 </h2>
               </div>
             </div>
+  
+            {/* ACHIEVEMENTS */}
   
             <div
               className="
@@ -163,13 +240,15 @@ import {
               rounded-2xl
               p-6
               shadow-sm
+              border
+              border-slate-200
               "
             >
               <h2
                 className="
                 text-2xl
                 font-bold
-                mb-4
+                mb-5
                 "
               >
                 🏅 Achievements
@@ -182,25 +261,42 @@ import {
                 gap-3
                 "
               >
-                {data.achievements.map(
-                  (
-                    achievement: string,
-                    index: number
-                  ) => (
-                    <div
-                      key={index}
-                      className="
-                      bg-green-100
-                      text-green-700
-                      px-4
-                      py-2
-                      rounded-full
-                      font-medium
-                      "
-                    >
-                      {achievement}
-                    </div>
+                {data
+                  .achievements
+                  ?.length > 0 ? (
+                  data.achievements.map(
+                    (
+                      achievement: string,
+                      index: number
+                    ) => (
+                      <div
+                        key={index}
+                        className="
+                        bg-green-100
+                        text-green-700
+                        px-4
+                        py-2
+                        rounded-full
+                        font-medium
+                        "
+                      >
+                        {achievement}
+                      </div>
+                    )
                   )
+                ) : (
+                  <div
+                    className="
+                    py-6
+                    text-slate-500
+                    "
+                  >
+                    🏆 Complete
+                    challenges and
+                    sustainability goals
+                    to unlock your
+                    first achievement.
+                  </div>
                 )}
               </div>
             </div>

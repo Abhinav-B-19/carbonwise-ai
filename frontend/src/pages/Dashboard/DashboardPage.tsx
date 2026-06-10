@@ -293,6 +293,114 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* QUICK ACTIONS */}
+
+          <div
+            className="
+            bg-white
+            rounded-2xl
+            p-6
+            shadow-sm
+            border
+            mb-8
+            "
+          >
+            <h2
+              className="
+              text-xl
+              font-bold
+              mb-5
+              "
+            >
+              ⚡ Quick Actions
+            </h2>
+
+            <div
+              className="
+              grid
+              grid-cols-2
+              md:grid-cols-4
+              gap-4
+              "
+            >
+              <a
+                href="/calculator"
+                className="
+                bg-green-50
+                border
+                border-green-200
+                rounded-xl
+                p-4
+                text-center
+                hover:bg-green-100
+                transition
+                "
+              >
+                🧮
+                <div className="mt-2">
+                  Calculator
+                </div>
+              </a>
+
+              <a
+                href="/goals"
+                className="
+                bg-blue-50
+                border
+                border-blue-200
+                rounded-xl
+                p-4
+                text-center
+                hover:bg-blue-100
+                transition
+                "
+              >
+                🎯
+                <div className="mt-2">
+                  Goals
+                </div>
+              </a>
+
+              <a
+                href="/ai-coach"
+                className="
+                bg-purple-50
+                border
+                border-purple-200
+                rounded-xl
+                p-4
+                text-center
+                hover:bg-purple-100
+                transition
+                "
+              >
+                🤖
+                <div className="mt-2">
+                  AI Coach
+                </div>
+              </a>
+
+              <a
+                href="/scenario"
+                className="
+                bg-orange-50
+                border
+                border-orange-200
+                rounded-xl
+                p-4
+                text-center
+                hover:bg-orange-100
+                transition
+                "
+              >
+                🔮
+                <div className="mt-2">
+                  Scenario
+                </div>
+              </a>
+            </div>
+          </div>
+
           {/* METRICS */}
 
           <div
@@ -432,6 +540,109 @@ export default function DashboardPage() {
               >
                 {getLevel(score)}
               </p>
+            </div>
+          </div>
+
+          {/* REWARDS SNAPSHOT */}
+
+          <div
+            className="
+            bg-white
+            rounded-2xl
+            p-6
+            shadow-sm
+            border
+            mb-8
+            "
+          >
+            <h2
+              className="
+              text-xl
+              font-bold
+              mb-5
+              "
+            >
+              🏆 Rewards Snapshot
+            </h2>
+
+            <div
+              className="
+              grid
+              grid-cols-2
+              lg:grid-cols-4
+              gap-5
+              "
+            >
+              <div>
+                <p className="text-slate-500">
+                  Level
+                </p>
+
+                <h3
+                  className="
+                  text-xl
+                  font-bold
+                  text-purple-600
+                  "
+                >
+                  {gamification.level}
+                </h3>
+              </div>
+
+              <div>
+                <p className="text-slate-500">
+                  Points
+                </p>
+
+                <h3
+                  className="
+                  text-xl
+                  font-bold
+                  text-green-600
+                  "
+                >
+                  {
+                    gamification.greenPoints
+                  }
+                </h3>
+              </div>
+
+              <div>
+                <p className="text-slate-500">
+                  Streak
+                </p>
+
+                <h3
+                  className="
+                  text-xl
+                  font-bold
+                  text-orange-500
+                  "
+                >
+                  {
+                    gamification.currentStreak
+                  } Days
+                </h3>
+              </div>
+
+              <div>
+                <p className="text-slate-500">
+                  Achievements
+                </p>
+
+                <h3
+                  className="
+                  text-xl
+                  font-bold
+                  text-blue-600
+                  "
+                >
+                  {
+                    gamification.achievements
+                      ?.length ?? 0
+                  }
+                </h3>
+              </div>
             </div>
           </div>
 
