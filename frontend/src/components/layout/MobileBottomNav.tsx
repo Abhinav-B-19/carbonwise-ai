@@ -25,28 +25,33 @@ export default function MobileBottomNav() {
         className="
         lg:hidden
         fixed
-        bottom-0
         left-0
         right-0
+        bottom-0
+        w-screen
+        bottom-0
         bg-white
         border-t
         border-slate-200
         flex
         justify-around
-        py-3
-        z-40
+        items-center
+        h-16
+        z-[9999]
+        shadow-[0_-2px_10px_rgba(0,0,0,0.08)]
         "
       >
         <NavLink
           to="/dashboard"
-          className={({
-            isActive,
-          }) =>
+          className={({ isActive }) =>
             `
             flex
             flex-col
             items-center
+            justify-center
             text-xs
+            flex-1
+            h-full
 
             ${
               isActive
@@ -56,23 +61,21 @@ export default function MobileBottomNav() {
             `
           }
         >
-          <LayoutDashboard
-            size={20}
-          />
-
+          <LayoutDashboard size={20} />
           Dashboard
         </NavLink>
 
         <NavLink
           to="/calculator"
-          className={({
-            isActive,
-          }) =>
+          className={({ isActive }) =>
             `
             flex
             flex-col
             items-center
+            justify-center
             text-xs
+            flex-1
+            h-full
 
             ${
               isActive
@@ -82,23 +85,21 @@ export default function MobileBottomNav() {
             `
           }
         >
-          <Calculator
-            size={20}
-          />
-
+          <Calculator size={20} />
           Calculator
         </NavLink>
 
         <NavLink
           to="/goals"
-          className={({
-            isActive,
-          }) =>
+          className={({ isActive }) =>
             `
             flex
             flex-col
             items-center
+            justify-center
             text-xs
+            flex-1
+            h-full
 
             ${
               isActive
@@ -108,14 +109,14 @@ export default function MobileBottomNav() {
             `
           }
         >
-          <Target
-            size={20}
-          />
-
+          <Target size={20} />
           Goals
         </NavLink>
 
         <button
+          type="button"
+          title="More options"
+          aria-label="More options"
           onClick={() =>
             setOpen(true)
           }
@@ -123,14 +124,14 @@ export default function MobileBottomNav() {
           flex
           flex-col
           items-center
+          justify-center
           text-xs
           text-slate-500
+          flex-1
+          h-full
           "
         >
-          <Menu
-            size={20}
-          />
-
+          <Menu size={20} />
           More
         </button>
       </div>

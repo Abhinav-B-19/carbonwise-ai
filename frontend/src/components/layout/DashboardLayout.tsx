@@ -10,15 +10,20 @@ export default function DashboardLayout({
   children,
 }: DashboardLayoutProps) {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div
+      className="
+      min-h-screen
+      bg-slate-50
+      overflow-x-hidden
+      "
+    >
       <Sidebar />
 
       <main
         className="
         lg:ml-64
         min-h-screen
-        pb-20
-        lg:pb-0
+        pb-28
         "
       >
         {children}
