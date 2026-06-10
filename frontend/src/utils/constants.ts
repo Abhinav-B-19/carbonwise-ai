@@ -1,0 +1,1 @@
+export const API_BASE_URL = "https://carbonwise-ai-44hh.onrender.com";
