@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import PageContainer from "../../components/layout/PageContainer";
+import PageLoader from "../../components/ui/PageLoader";
 
 import EmissionTrendChart from "../../components/charts/EmissionTrendChart";
 import ScoreTrendChart from "../../components/charts/ScoreTrendChart";
@@ -130,23 +131,7 @@ export default function DashboardPage() {
     return (
       <DashboardLayout>
         <PageContainer>
-          <div
-            className="
-            flex
-            items-center
-            justify-center
-            h-[60vh]
-            "
-          >
-            <div
-              className="
-              text-xl
-              font-semibold
-              "
-            >
-              Loading Dashboard...
-            </div>
-          </div>
+          <PageLoader />
         </PageContainer>
       </DashboardLayout>
     );

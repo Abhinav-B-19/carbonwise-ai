@@ -7,6 +7,7 @@ import {
   
   import DashboardLayout from "../../components/layout/DashboardLayout";
   import PageContainer from "../../components/layout/PageContainer";
+  import PageLoader from "../../components/ui/PageLoader";
   
   import ChallengeCard from "../../components/cards/ChallengeCard";
   
@@ -114,60 +115,12 @@ import {
         return (
           <DashboardLayout>
             <PageContainer>
-              <div
-                className="
-                flex
-                items-center
-                justify-center
-                min-h-[60vh]
-                "
-              >
-                <div
-                  className="
-                  bg-white
-                  rounded-2xl
-                  px-10
-                  py-8
-                  shadow-sm
-                  border
-                  border-slate-200
-                  "
-                >
-                  <div
-                    className="
-                    flex
-                    items-center
-                    gap-3
-                    "
-                  >
-                    <div
-                      className="
-                      h-6
-                      w-6
-                      rounded-full
-                      border-4
-                      border-green-500
-                      border-t-transparent
-                      animate-spin
-                      "
-                    />
-    
-                    <span
-                      className="
-                      text-lg
-                      font-semibold
-                      "
-                    >
-                      Loading Challenges...
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <PageLoader />
             </PageContainer>
           </DashboardLayout>
         );
       }
-      
+
     return (
       <DashboardLayout>
         <PageContainer>

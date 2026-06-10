@@ -5,6 +5,7 @@ import {
   
   import DashboardLayout from "../../components/layout/DashboardLayout";
   import PageContainer from "../../components/layout/PageContainer";
+  import PageLoader from "../../components/ui/PageLoader";
   
   import api from "../../api/api";
   
@@ -58,17 +59,15 @@ import {
         }
       };
   
-    if (!data) {
-      return (
-        <DashboardLayout>
-          <PageContainer>
-            <div className="py-10">
-              Loading Rewards...
-            </div>
-          </PageContainer>
-        </DashboardLayout>
-      );
-    }
+      if (!data) {
+        return (
+          <DashboardLayout>
+            <PageContainer>
+              <PageLoader />
+            </PageContainer>
+          </DashboardLayout>
+        );
+      }
   
     return (
       <DashboardLayout>
