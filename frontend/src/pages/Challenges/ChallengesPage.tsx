@@ -261,7 +261,7 @@ import {
   
             {/* ACHIEVEMENTS */}
   
-            {gamification?.achievements?.length > 0 && (
+            {(gamification?.achievements?.length ?? 0) > 0 && (
               <div
                 className="
                 bg-white
