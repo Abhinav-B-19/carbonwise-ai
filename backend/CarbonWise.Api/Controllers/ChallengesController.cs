@@ -55,4 +55,13 @@ public class ChallengesController : ControllerBase
 
         return Ok(result);
     }
+
+    [HttpGet("missions")]
+    public async Task<IActionResult> GetMissions()
+    {
+        var result =
+            await _service.GetMissionsAsync();
+
+        return Ok(result);
+    }
 }

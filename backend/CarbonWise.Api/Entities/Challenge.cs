@@ -13,4 +13,8 @@ public class Challenge
     public int Points { get; set; }
 
     public decimal CarbonSaved { get; set; }
+
+    public string Category { get; set; } = string.Empty;
+
+    public string ChallengeType { get; set; } = string.Empty;
 }

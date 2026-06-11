@@ -13,4 +13,6 @@ public interface IChallengeService
 
     Task<List<DailyChallengeResponse>> GetHistoryAsync(
         string userKey);
+
+    Task<MissionsResponse> GetMissionsAsync();
 }

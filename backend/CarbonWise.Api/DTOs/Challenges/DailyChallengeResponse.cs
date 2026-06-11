@@ -13,4 +13,8 @@ public class DailyChallengeResponse
     public decimal CarbonSaved { get; set; }
 
     public bool Completed { get; set; }
+
+    public string Category { get; set; } = string.Empty;
+
+    public string ChallengeType { get; set; } = string.Empty;
 }

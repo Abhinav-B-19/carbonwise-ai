@@ -230,4 +230,52 @@ public class ChallengeService : IChallengeService
             }
         ).ToListAsync();
     }
+
+    public async Task<MissionsResponse> GetMissionsAsync()
+    {
+        var challenges =
+            await _dbContext.Challenges
+                .ToListAsync();
+
+        return new MissionsResponse
+        {
+            Daily =
+                challenges
+                    .Where(x =>
+                        x.ChallengeType == "Daily")
+                    .Select(MapChallenge)
+                    .ToList(),
+
+            Weekly =
+                challenges
+                    .Where(x =>
+                        x.ChallengeType == "Weekly")
+                    .Select(MapChallenge)
+                    .ToList(),
+
+            Monthly =
+                challenges
+                    .Where(x =>
+                        x.ChallengeType == "Monthly")
+                    .Select(MapChallenge)
+                    .ToList()
+        };
+    }
+
+    private static DailyChallengeResponse
+    MapChallenge(
+        Challenge challenge)
+    {
+        return new DailyChallengeResponse
+        {
+            ChallengeId = challenge.Id,
+            Title = challenge.Title,
+            Description = challenge.Description,
+            Points = challenge.Points,
+            CarbonSaved = challenge.CarbonSaved,
+            Completed = false,
+            Category = challenge.Category,
+            ChallengeType = challenge.ChallengeType
+        };
+    }
 }
