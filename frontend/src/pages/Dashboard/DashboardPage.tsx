@@ -150,131 +150,130 @@ export default function DashboardPage() {
 
           <div
             className="
-            bg-gradient-to-r
-            from-green-500
-            to-emerald-600
+            relative
+            overflow-hidden
+            rounded-[36px]
+            bg-gradient-to-br
+            from-emerald-600
+            via-green-500
+            to-teal-500
+            p-10
             text-white
-            rounded-3xl
-            p-8
-            shadow-lg
             mb-8
+            shadow-[0_30px_80px_rgba(5,150,105,0.35)]
             "
           >
-            <h1
-              className="
-              text-4xl
-              font-bold
-              "
-            >
-              Welcome Back,
-              {" "}
-              {userName}
-              {" "}
-              👋
-            </h1>
+            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/20 blur-3xl" />
+            <div className="absolute -bottom-20 left-0 h-64 w-64 rounded-full bg-emerald-300/20 blur-3xl" />
 
-            <p
-              className="
-              mt-3
-              text-lg
-              text-green-50
-              "
-            >
-              Track your sustainability
-              journey and achieve your
-              eco goals.
-            </p>
-
-            <div
-              className="
-              mt-8
-              grid
-              grid-cols-2
-              lg:grid-cols-5
-              gap-6
-              "
-            >
-              <div>
-                <p className="text-green-100">
-                  Carbon Score
-                </p>
-
-                <h2
-                  className="
-                  text-4xl
-                  font-bold
-                  "
-                >
-                  {score}/100
-                </h2>
-              </div>
+            <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
 
               <div>
-                <p className="text-green-100">
-                  Level
+                <div className="inline-flex rounded-full bg-white/15 backdrop-blur-md px-4 py-2 text-sm">
+                  🌱 Sustainability Dashboard
+                </div>
+
+                <h1 className="mt-5 text-5xl font-bold tracking-tight">
+                  Welcome Back,
+                  <br />
+                  {userName} 👋
+                </h1>
+
+                <p className="mt-4 text-white/80 max-w-xl text-lg">
+                  Your sustainability journey is improving every day.
                 </p>
 
-                <h2
-                  className="
-                  text-2xl
-                  font-bold
-                  "
-                >
-                  {gamification.level ||
-                    getLevel(score)}
-                </h2>
+                <div className="flex gap-3 mt-6 flex-wrap">
+
+                  <div
+                    className="
+                    bg-white/15
+                    px-4
+                    py-2
+                    rounded-full
+                    backdrop-blur-md
+                    border
+                    border-white/10
+                    hover:bg-white/20
+                    transition-all
+                    "
+                  >
+                    🔥 {gamification.currentStreak} Day Streak
+                  </div>
+
+                  <div
+                    className="
+                    bg-white/15
+                    px-4
+                    py-2
+                    rounded-full
+                    backdrop-blur-md
+                    border
+                    border-white/10
+                    hover:bg-white/20
+                    transition-all
+                    "
+                  >
+                    ⭐ {gamification.greenPoints} Points
+                  </div>
+
+                  <div
+                    className="
+                    bg-white/15
+                    px-4
+                    py-2
+                    rounded-full
+                    backdrop-blur-md
+                    border
+                    border-white/10
+                    hover:bg-white/20
+                    transition-all
+                    "
+                  >
+                    Level 🎯 {gamification.level || getLevel(score)}
+                  </div>
+
+                  <div
+                    className="
+                    bg-white/15
+                    px-4
+                    py-2
+                    rounded-full
+                    backdrop-blur-md
+                    border
+                    border-white/10
+                    hover:bg-white/20
+                    transition-all
+                    "
+                  >
+                    📊 {data?.totalCalculations ?? 0} Sustainability Checkups
+                  </div>
+
+                </div>
               </div>
 
-              <div>
-                <p className="text-green-100">
-                  Green Points
-                </p>
-
-                <h2
-                  className="
-                  text-4xl
-                  font-bold
-                  "
+              <div className="flex justify-center">
+                <div
+                  className="relative h-56 w-56 rounded-full flex items-center justify-center"
+                  style={{
+                    background: `conic-gradient(
+                      white ${score * 3.6}deg,
+                      rgba(255,255,255,0.15) 0deg
+                    )`,
+                  }}
                 >
-                  {
-                    gamification.greenPoints
-                  }
-                </h2>
+                  <div className="h-44 w-44 rounded-full bg-emerald-600 flex flex-col items-center justify-center">
+                    <span className="text-6xl font-bold">
+                      {score}
+                    </span>
+
+                    <span className="text-sm text-white/80">
+                      Carbon Score
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <p className="text-green-100">
-                  Streak
-                </p>
-
-                <h2
-                  className="
-                  text-4xl
-                  font-bold
-                  "
-                >
-                  {
-                    gamification.currentStreak
-                  }
-                </h2>
-              </div>
-
-              <div>
-                <p className="text-green-100">
-                  Assessments
-                </p>
-
-                <h2
-                  className="
-                  text-4xl
-                  font-bold
-                  "
-                >
-                  {
-                    data?.totalCalculations
-                  }
-                </h2>
-              </div>
             </div>
           </div>
 
