@@ -30,6 +30,10 @@ public class CarbonWiseDbContext : DbContext
 
     public DbSet<UserAchievement> UserAchievements => Set<UserAchievement>();
 
+    public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
+
+    public DbSet<AiChatUsage> AiChatUsages => Set<AiChatUsage>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>()
