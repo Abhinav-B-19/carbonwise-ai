@@ -138,37 +138,68 @@ import {
             {/* HERO */}
   
             <div
-              className="
-              bg-gradient-to-r
-              from-green-500
-              to-emerald-600
-              text-white
-              rounded-3xl
-              p-8
-              mb-8
-              "
-            >
-              <h1
-                className="
-                text-4xl
-                font-bold
-                "
-              >
-                🤖 AI Sustainability Coach
-              </h1>
-  
-              <p
-                className="
-                mt-3
-                text-lg
-                "
-              >
-                Get personalized
-                sustainability advice
-                based on your carbon
-                footprint history.
-              </p>
-            </div>
+  className="
+  bg-gradient-to-r
+  from-emerald-600
+  via-green-600
+  to-teal-600
+  rounded-3xl
+  p-8
+  mb-8
+  shadow-[0_20px_60px_rgba(5,150,105,0.25)]
+  "
+>
+  <div
+    className="
+    inline-flex
+    items-center
+    gap-2
+    px-4
+    py-2
+    rounded-full
+    bg-white/15
+    border
+    border-white/20
+    backdrop-blur-sm
+    text-white
+    text-sm
+    font-medium
+    mb-5
+    "
+  >
+    🤖 AI Powered Sustainability
+  </div>
+
+  <h1
+    style={{
+      color: "#ffffff",
+    }}
+    className="
+    text-5xl
+    font-bold
+    "
+  >
+    AI Sustainability Coach
+  </h1>
+
+  <p
+    style={{
+      color:
+        "rgba(255,255,255,0.9)",
+    }}
+    className="
+    mt-4
+    text-lg
+    max-w-2xl
+    "
+  >
+    Get personalized
+    sustainability advice
+    based on your carbon
+    footprint history and
+    lifestyle patterns.
+  </p>
+</div>
   
             {/* AI CARD */}
   

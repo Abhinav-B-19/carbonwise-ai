@@ -14,6 +14,7 @@ import ChallengesPage from "./pages/Challenges/ChallengesPage";
 import GamificationPage from "./pages/Gamification/GamificationPage";
 import AiCoachPage from "./pages/AiCoach/AiCoachPage";
 import ScenarioPage from "./pages/Scenario/ScenarioPage";
+import AiAssistantPage from "./pages/AiAssistant/AiAssistantPage";
 
 import ProtectedRoute from "./components/layout/ProtectedRoute";
 
@@ -90,6 +91,15 @@ function App() {
         element={
           <ProtectedRoute>
             <AiCoachPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/ai-assistant"
+        element={
+          <ProtectedRoute>
+            <AiAssistantPage />
           </ProtectedRoute>
         }
       />

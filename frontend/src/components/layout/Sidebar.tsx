@@ -44,11 +44,6 @@ const menuItems = [
     icon: Target,
   },
   {
-    name: "Challenges",
-    path: "/challenges",
-    icon: Trophy,
-  },
-  {
     name: "AI Coach",
     path: "/ai-coach",
     icon: Sparkles,
@@ -57,6 +52,11 @@ const menuItems = [
     name: "Scenario",
     path: "/scenario",
     icon: Leaf,
+  },
+  {
+    name: "Challenges",
+    path: "/challenges",
+    icon: Trophy,
   },
   {
     name: "Rewards",
