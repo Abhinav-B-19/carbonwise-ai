@@ -57,4 +57,21 @@ app.UseCors("Frontend");
 
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext =
+        scope.ServiceProvider
+            .GetRequiredService<CarbonWiseDbContext>();
+
+    dbContext.Database.Migrate();
+
+    if (!dbContext.Challenges.Any())
+    {
+        dbContext.Challenges.AddRange(
+            ChallengeSeeder.GetSeedData());
+
+        dbContext.SaveChanges();
+    }
+}
+
 app.Run();
