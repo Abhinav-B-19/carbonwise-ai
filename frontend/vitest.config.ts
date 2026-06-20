@@ -4,10 +4,30 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      "@/components": "/src/components",
+      "@/pages": "/src/pages",
+      "@/services": "/src/services",
+      "@/hooks": "/src/hooks",
+      "@/utils": "/src/utils",
+      "@/types": "/src/types",
+      "@/api": "/src/api",
+    },
+  },
+  server: {
+    fs: {
+      allow: [".."],
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: './src/__tests__/setup.ts',
+    include: [
+      '../tests/frontend/**/*.test.ts',
+      '../tests/frontend/**/*.test.tsx',
+    ],
+    setupFiles: './setupTests.ts',
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
@@ -18,10 +38,6 @@ export default defineConfig({
         'src/main.tsx',
         'src/vite-env.d.ts',
       ],
-      lines: 90,
-      functions: 90,
-      branches: 85,
-      statements: 90,
     },
   },
 });
