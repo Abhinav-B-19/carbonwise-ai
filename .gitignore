@@ -429,3 +429,22 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+
+# Backend
+**/bin/
+**/obj/
+TestResults/
+
+# Coverage
+coverage/
+lcov.info
+
+# Environment
+.env
+.env.*
+!.env.example
