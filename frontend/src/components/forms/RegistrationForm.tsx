@@ -1,22 +1,14 @@
 import { useState } from "react";
 
 interface Props {
-  onSubmit: (
-    name: string,
-    email: string,
-    preferredGoal: string
-  ) => void;
+  onSubmit: (name: string, email: string, preferredGoal: string) => void;
   loading: boolean;
 }
 
-export default function RegistrationForm({
-  onSubmit,
-  loading,
-}: Props) {
+export default function RegistrationForm({ onSubmit, loading }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [preferredGoal, setPreferredGoal] =
-    useState("");
+  const [preferredGoal, setPreferredGoal] = useState("");
 
   const [errors, setErrors] = useState({
     name: "",
@@ -34,23 +26,19 @@ export default function RegistrationForm({
     let valid = true;
 
     if (name.trim().length < 3) {
-      newErrors.name =
-        "Name must be at least 3 characters.";
+      newErrors.name = "Name must be at least 3 characters.";
       valid = false;
     }
 
-    const emailRegex =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
-      newErrors.email =
-        "Please enter a valid email address.";
+      newErrors.email = "Please enter a valid email address.";
       valid = false;
     }
 
     if (!preferredGoal) {
-      newErrors.preferredGoal =
-        "Please select a sustainability goal.";
+      newErrors.preferredGoal = "Please select a sustainability goal.";
       valid = false;
     }
 
@@ -59,24 +47,19 @@ export default function RegistrationForm({
     return valid;
   };
 
-  const handleSubmit = (
-    e: React.FormEvent
-  ) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!validate()) {
       return;
     }
 
-    onSubmit(
-      name.trim(),
-      email.trim(),
-      preferredGoal
-    );
+    onSubmit(name.trim(), email.trim(), preferredGoal);
   };
 
   return (
     <form
+      noValidate
       onSubmit={handleSubmit}
       className="
       bg-white
@@ -87,13 +70,10 @@ export default function RegistrationForm({
       p-8
       "
     >
-      <h2 className="text-2xl font-bold mb-2">
-        Create Your Account
-      </h2>
+      <h2 className="text-2xl font-bold mb-2">Create Your Account</h2>
 
       <p className="text-gray-500 mb-6">
-        Start tracking your carbon footprint
-        today.
+        Start tracking your carbon footprint today.
       </p>
 
       <div className="space-y-5">
@@ -120,9 +100,7 @@ export default function RegistrationForm({
             aria-label="Full Name"
             placeholder="Enter your full name"
             value={name}
-            onChange={(e) =>
-              setName(e.target.value)
-            }
+            onChange={(e) => setName(e.target.value)}
             className="
             w-full
             border
@@ -136,9 +114,7 @@ export default function RegistrationForm({
           />
 
           {errors.name && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.name}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
           )}
         </div>
 
@@ -165,9 +141,7 @@ export default function RegistrationForm({
             aria-label="Email Address"
             placeholder="john@example.com"
             value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
             className="
             w-full
             border
@@ -181,9 +155,7 @@ export default function RegistrationForm({
           />
 
           {errors.email && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.email}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
           )}
         </div>
 
@@ -208,11 +180,7 @@ export default function RegistrationForm({
             name="preferredGoal"
             aria-label="Sustainability Goal"
             value={preferredGoal}
-            onChange={(e) =>
-              setPreferredGoal(
-                e.target.value
-              )
-            }
+            onChange={(e) => setPreferredGoal(e.target.value)}
             className="
             w-full
             border
@@ -224,21 +192,15 @@ export default function RegistrationForm({
             focus:ring-green-500
             "
           >
-            <option value="">
-              Select a goal
-            </option>
+            <option value="">Select a goal</option>
 
-            <option value="Reduce Home Emissions">
-              Reduce Home Emissions
-            </option>
+            <option value="Reduce Home Emissions">Reduce Home Emissions</option>
 
             <option value="Reduce Transportation Emissions">
               Reduce Transportation Emissions
             </option>
 
-            <option value="Reduce Food Emissions">
-              Reduce Food Emissions
-            </option>
+            <option value="Reduce Food Emissions">Reduce Food Emissions</option>
 
             <option value="General Sustainability">
               General Sustainability
@@ -246,9 +208,7 @@ export default function RegistrationForm({
           </select>
 
           {errors.preferredGoal && (
-            <p className="text-red-500 text-sm mt-1">
-              {errors.preferredGoal}
-            </p>
+            <p className="text-red-500 text-sm mt-1">{errors.preferredGoal}</p>
           )}
         </div>
 
@@ -272,9 +232,7 @@ export default function RegistrationForm({
           disabled:cursor-not-allowed
           "
         >
-          {loading
-            ? "Creating Account..."
-            : "Get Started"}
+          {loading ? "Creating Account..." : "Get Started"}
         </button>
       </div>
     </form>
