@@ -1,41 +1,28 @@
 import { useState } from "react";
 
 interface Props {
-  onSubmit: (
-    goalType: string,
-    targetValue: number
-  ) => void;
+  onSubmit: (goalType: string, targetValue: number) => void;
 
   loading: boolean;
 }
 
 const goalTypes = [
-    "Improve Carbon Score",
-    "Reduce Total Emissions",
-    "General Sustainability",
-  ];
+  "Improve Carbon Score",
+  "Reduce Total Emissions",
+  "General Sustainability",
+];
 
-export default function CreateGoalForm({
-  onSubmit,
-  loading,
-}: Props) {
-  const [goalType, setGoalType] =
-    useState(goalTypes[0]);
+export default function CreateGoalForm({ onSubmit, loading }: Props) {
+  const [goalType, setGoalType] = useState(goalTypes[0]);
 
-  const [targetValue, setTargetValue] =
-    useState("");
+  const [targetValue, setTargetValue] = useState("");
 
-  const submit = (
-    e: React.FormEvent
-  ) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!targetValue) return;
 
-    onSubmit(
-      goalType,
-      Number(targetValue)
-    );
+    onSubmit(goalType, Number(targetValue));
 
     setTargetValue("");
   };
@@ -64,19 +51,12 @@ export default function CreateGoalForm({
       </h2>
 
       <div className="space-y-4">
-
         <div>
-          <label className="block mb-2 text-sm font-medium">
-            Goal Type
-          </label>
+          <label className="block mb-2 text-sm font-medium">Goal Type</label>
 
           <select
             value={goalType}
-            onChange={(e) =>
-              setGoalType(
-                e.target.value
-              )
-            }
+            onChange={(e) => setGoalType(e.target.value)}
             className="
             w-full
             border
@@ -84,16 +64,11 @@ export default function CreateGoalForm({
             p-3
             "
           >
-            {goalTypes.map(
-              (goal) => (
-                <option
-                  key={goal}
-                  value={goal}
-                >
-                  {goal}
-                </option>
-              )
-            )}
+            {goalTypes.map((goal) => (
+              <option key={goal} value={goal}>
+                {goal}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -105,11 +80,7 @@ export default function CreateGoalForm({
           <input
             type="number"
             value={targetValue}
-            onChange={(e) =>
-              setTargetValue(
-                e.target.value
-              )
-            }
+            onChange={(e) => setTargetValue(e.target.value)}
             required
             min="1"
             placeholder="Example: 20"
@@ -135,11 +106,8 @@ export default function CreateGoalForm({
           hover:bg-green-700
           "
         >
-          {loading
-            ? "Creating..."
-            : "Create Goal"}
+          {loading ? "Creating..." : "Create Goal"}
         </button>
-
       </div>
     </form>
   );

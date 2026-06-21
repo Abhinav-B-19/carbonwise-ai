@@ -128,4 +128,12 @@ describe("RegistrationForm", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("shows loading state", () => {
+    render(<RegistrationForm onSubmit={vi.fn()} loading />);
+
+    expect(screen.getByRole("button")).toBeDisabled();
+
+    expect(screen.getByText("Creating Account...")).toBeInTheDocument();
+  });
 });

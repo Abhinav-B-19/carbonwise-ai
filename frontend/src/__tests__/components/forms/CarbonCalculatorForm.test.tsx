@@ -152,4 +152,12 @@ describe("CarbonCalculatorForm", () => {
       }),
     );
   });
+
+  it("shows loading state", () => {
+    render(<CarbonCalculatorForm onSubmit={vi.fn()} loading />);
+
+    expect(screen.getByRole("button")).toBeDisabled();
+
+    expect(screen.getByText("Calculating...")).toBeInTheDocument();
+  });
 });

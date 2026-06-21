@@ -1,7 +1,4 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import {
   LayoutDashboard,
@@ -15,17 +12,11 @@ import {
   User,
 } from "lucide-react";
 
-import {
-  NavLink,
-  useNavigate,
-} from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import api from "../../api/api";
 
-import {
-  clearUserKey,
-  getUserName,
-} from "../../services/localStorage";
+import { clearUserKey, getUserName } from "../../services/localStorage";
 
 const menuItems = [
   {
@@ -73,43 +64,25 @@ interface UserProfile {
 }
 
 export default function Sidebar() {
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
-  const userName =
-    getUserName() ||
-    "Eco User";
+  const userName = getUserName() || "Eco User";
 
-  const [profile, setProfile] =
-    useState<UserProfile>();
+  const [profile, setProfile] = useState<UserProfile>();
 
   useEffect(() => {
     loadProfile();
   }, []);
 
-  const loadProfile =
-    async () => {
-      try {
-        const response =
-          await api.get(
-            "/api/users/profile"
-          );
+  const loadProfile = async () => {
+    try {
+      const response = await api.get("/api/users/profile");
 
-        console.log(
-          "PROFILE",
-          response.data
-        );
-
-        setProfile(
-          response.data
-        );
-      } catch (error) {
-        console.error(
-          "Unable to load profile",
-          error
-        );
-      }
-    };
+      setProfile(response.data);
+    } catch (error) {
+      console.error("Unable to load profile", error);
+    }
+  };
 
   const logout = () => {
     clearUserKey();
@@ -147,19 +120,15 @@ export default function Sidebar() {
       </h1>
 
       <nav className="flex flex-col gap-2">
-        {menuItems.map(
-          (item) => {
-            const Icon =
-              item.icon;
+        {menuItems.map((item) => {
+          const Icon = item.icon;
 
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                className={({
-                  isActive,
-                }) =>
-                  `
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                `
                   flex
                   items-center
                   gap-3
@@ -174,21 +143,17 @@ export default function Sidebar() {
                       : "text-slate-600 hover:bg-slate-100"
                   }
                   `
-                }
-              >
-                <Icon size={20} />
+              }
+            >
+              <Icon size={20} />
 
-                <span>
-                  {item.name}
-                </span>
-              </NavLink>
-            );
-          }
-        )}
+              <span>{item.name}</span>
+            </NavLink>
+          );
+        })}
       </nav>
 
       <div className="mt-auto">
-
         <div
           className="
           border
@@ -280,10 +245,8 @@ export default function Sidebar() {
           "
         >
           <LogOut size={18} />
-
           Logout
         </button>
-
       </div>
     </aside>
   );

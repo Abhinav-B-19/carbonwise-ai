@@ -1,86 +1,126 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import CreateGoalForm from "@/components/forms/GoalForm";
+
+import GoalForm from "@/components/forms/GoalForm";
 
 describe("GoalForm", () => {
-  it("renders all fields", () => {
-    const mockSubmit = vi.fn();
-    render(<CreateGoalForm onSubmit={mockSubmit} loading={false} />);
+  it("renders all fields with default values", () => {
+    render(<GoalForm onSubmit={vi.fn()} loading={false} />);
 
-    expect(screen.getByText(/Goal Type/i)).toBeInTheDocument();
-    expect(screen.getByText(/Target Goal Value/i)).toBeInTheDocument();
+    expect(screen.getByText(/create new goal/i)).toBeInTheDocument();
+    expect(screen.getByText(/goal type/i)).toBeInTheDocument();
+    expect(screen.getByText(/target goal value/i)).toBeInTheDocument();
+
+    const select = screen.getByRole("combobox");
+    const input = screen.getByRole("spinbutton");
+    const button = screen.getByRole("button", {
+      name: /create goal/i,
+    });
+
+    expect(select).toHaveValue("Improve Carbon Score");
+    expect(input).toHaveValue(null);
+    expect(button).toBeEnabled();
+  });
+
+  it("changes goal type", async () => {
+    const user = userEvent.setup();
+
+    render(<GoalForm onSubmit={vi.fn()} loading={false} />);
+
+    const select = screen.getByRole("combobox");
+
+    await user.selectOptions(select, "Reduce Total Emissions");
+
+    expect(select).toHaveValue("Reduce Total Emissions");
+  });
+
+  it("updates the target value input", async () => {
+    const user = userEvent.setup();
+
+    render(<GoalForm onSubmit={vi.fn()} loading={false} />);
+
+    const input = screen.getByRole("spinbutton");
+
+    await user.type(input, "25");
+
+    expect(input).toHaveValue(25);
+  });
+
+  it("submits valid values and resets the input", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+
+    render(<GoalForm onSubmit={onSubmit} loading={false} />);
+
+    const select = screen.getByRole("combobox");
+    const input = screen.getByRole("spinbutton");
+
+    await user.selectOptions(select, "General Sustainability");
+    await user.type(input, "50");
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /create goal/i,
+      }),
+    );
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(onSubmit).toHaveBeenCalledWith("General Sustainability", 50);
+
+    // covers setTargetValue("")
+    expect(input).toHaveValue(null);
+  });
+
+  it("does not submit when target value is empty", async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+
+    render(<GoalForm onSubmit={onSubmit} loading={false} />);
+
+    await user.click(
+      screen.getByRole("button", {
+        name: /create goal/i,
+      }),
+    );
+
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
+  it("shows loading state", () => {
+    render(<GoalForm onSubmit={vi.fn()} loading />);
+
+    const button = screen.getByRole("button");
+
+    expect(button).toBeDisabled();
+    expect(button).toHaveTextContent("Creating...");
+  });
+
+  it("shows normal button text when not loading", () => {
+    render(<GoalForm onSubmit={vi.fn()} loading={false} />);
+
     expect(
-      screen.getByRole("button", { name: /Create Goal/i }),
-    ).toBeInTheDocument();
+      screen.getByRole("button", {
+        name: /create goal/i,
+      }),
+    ).toHaveTextContent("Create Goal");
   });
 
-  it("allows user input", async () => {
-    const user = userEvent.setup();
-    const mockSubmit = vi.fn();
-    render(<CreateGoalForm onSubmit={mockSubmit} loading={false} />);
+  it("returns early when target value is empty", () => {
+    const onSubmit = vi.fn();
 
-    const targetInput = screen.getByPlaceholderText(/Example: 20/i);
+    render(<GoalForm onSubmit={onSubmit} loading={false} />);
 
-    await user.type(targetInput, "25");
+    const form = screen
+      .getByRole("button", {
+        name: /create goal/i,
+      })
+      .closest("form");
 
-    expect(targetInput).toHaveValue(25);
-  });
+    expect(form).toBeInTheDocument();
 
-  it("validates required inputs", async () => {
-    const user = userEvent.setup();
-    const mockSubmit = vi.fn();
-    render(<CreateGoalForm onSubmit={mockSubmit} loading={false} />);
+    fireEvent.submit(form!);
 
-    const submitButton = screen.getByRole("button", { name: /Create Goal/i });
-
-    await user.click(submitButton);
-
-    expect(mockSubmit).not.toHaveBeenCalled();
-  });
-
-  it("submits valid goal values", async () => {
-    const user = userEvent.setup();
-    const mockSubmit = vi.fn();
-    render(<CreateGoalForm onSubmit={mockSubmit} loading={false} />);
-
-    const targetInput = screen.getByPlaceholderText(/Example: 20/i);
-    const submitButton = screen.getByRole("button", { name: /Create Goal/i });
-
-    await user.type(targetInput, "30");
-    await user.click(submitButton);
-
-    expect(mockSubmit).toHaveBeenCalledWith("Improve Carbon Score", 30);
-  });
-
-  it("handles numeric input correctly", async () => {
-    const user = userEvent.setup();
-    const mockSubmit = vi.fn();
-    render(<CreateGoalForm onSubmit={mockSubmit} loading={false} />);
-
-    const targetInput = screen.getByPlaceholderText(
-      /Example: 20/i,
-    ) as HTMLInputElement;
-
-    await user.type(targetInput, "42");
-
-    expect(Number(targetInput.value)).toBe(42);
-  });
-
-  it("verifies callback invocation", async () => {
-    const user = userEvent.setup();
-    const mockSubmit = vi.fn();
-    render(<CreateGoalForm onSubmit={mockSubmit} loading={false} />);
-
-    const goalSelect = screen.getByDisplayValue("Improve Carbon Score");
-    const targetInput = screen.getByPlaceholderText(/Example: 20/i);
-    const submitButton = screen.getByRole("button", { name: /Create Goal/i });
-
-    await user.selectOptions(goalSelect, "Reduce Total Emissions");
-    await user.type(targetInput, "50");
-    await user.click(submitButton);
-
-    expect(mockSubmit).toHaveBeenCalledOnce();
-    expect(mockSubmit).toHaveBeenCalledWith("Reduce Total Emissions", 50);
+    expect(onSubmit).not.toHaveBeenCalled();
   });
 });

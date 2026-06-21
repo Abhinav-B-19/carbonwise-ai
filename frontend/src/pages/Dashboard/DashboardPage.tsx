@@ -9,9 +9,7 @@ import ScoreTrendChart from "../../components/charts/ScoreTrendChart";
 
 import api from "../../api/api";
 
-import {
-  getUserKey,
-} from "../../services/localStorage";
+import { getUserKey } from "../../services/localStorage";
 
 interface GamificationResponse {
   greenPoints: number;
@@ -21,108 +19,72 @@ interface GamificationResponse {
 }
 
 export default function DashboardPage() {
-  const [data, setData] =
-    useState<any>(null);
+  const [data, setData] = useState<any>(null);
 
-  const [history, setHistory] =
-    useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
 
-  const [gamification, setGamification] =
-    useState<GamificationResponse>({
-      greenPoints: 0,
-      currentStreak: 0,
-      level: "",
-      achievements: [],
-    });
+  const [gamification, setGamification] = useState<GamificationResponse>({
+    greenPoints: 0,
+    currentStreak: 0,
+    level: "",
+    achievements: [],
+  });
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const userName =
-    localStorage.getItem(
-      "carbonwise_userName"
-    ) || "Eco Warrior";
+  const userName = localStorage.getItem("carbonwise_userName") || "Eco Warrior";
 
   useEffect(() => {
     loadDashboard();
   }, []);
 
-  const loadDashboard =
-    async () => {
-      try {
-        const userKey =
-          getUserKey();
+  const loadDashboard = async () => {
+    try {
+      const userKey = getUserKey();
 
-        if (!userKey) return;
+      if (!userKey) return;
 
-        const [
-          dashboardResponse,
-          historyResponse,
-          gamificationResponse,
-        ] = await Promise.all([
-          api.get(
-            `/api/dashboard?userKey=${userKey}`
-          ),
+      const [dashboardResponse, historyResponse, gamificationResponse] =
+        await Promise.all([
+          api.get(`/api/dashboard?userKey=${userKey}`),
 
-          api.get(
-            `/api/carbon/history?userKey=${userKey}`
-          ),
+          api.get(`/api/carbon/history?userKey=${userKey}`),
 
-          api.get(
-            `/api/gamification?userKey=${userKey}`
-          ),
+          api.get(`/api/gamification?userKey=${userKey}`),
         ]);
 
-        setData(
-          dashboardResponse.data
-        );
+      setData(dashboardResponse.data);
 
-        setHistory(
-          historyResponse.data || []
-        );
+      setHistory(historyResponse.data || []);
 
-        setGamification(
-          gamificationResponse.data
-        );
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      setGamification(gamificationResponse.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const getLevel = (
-    score: number
-  ) => {
-    if (score >= 80)
-      return "Eco Champion";
+  const getLevel = (score: number) => {
+    if (score >= 80) return "Eco Champion";
 
-    if (score >= 60)
-      return "Green Advocate";
+    if (score >= 60) return "Green Advocate";
 
-    if (score >= 40)
-      return "Carbon Aware";
+    if (score >= 40) return "Carbon Aware";
 
-    if (score >= 20)
-      return "Eco Beginner";
+    if (score >= 20) return "Eco Beginner";
 
     return "Needs Improvement";
   };
 
-  const getScoreColor = (
-    score: number
-  ) => {
-    if (score >= 80)
-      return "text-green-600";
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return "text-green-600";
 
-    if (score >= 60)
-      return "text-lime-600";
+    if (score >= 60) return "text-lime-600";
 
-    if (score >= 40)
-      return "text-yellow-600";
+    if (score >= 40) return "text-yellow-600";
 
-    if (score >= 20)
-      return "text-orange-600";
+    if (score >= 20) return "text-orange-600";
 
     return "text-red-600";
   };
@@ -137,15 +99,12 @@ export default function DashboardPage() {
     );
   }
 
-  const score =
-    data?.carbonScore ?? 0;
+  const score = data?.carbonScore ?? 0;
 
   return (
     <DashboardLayout>
       <PageContainer>
-
         <div className="py-8">
-
           {/* HERO */}
 
           <div
@@ -167,7 +126,6 @@ export default function DashboardPage() {
             <div className="absolute -bottom-20 left-0 h-64 w-64 rounded-full bg-emerald-300/20 blur-3xl" />
 
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
-
               <div>
                 <div className="inline-flex rounded-full bg-white/15 backdrop-blur-md px-4 py-2 text-sm">
                   🌱 Sustainability Dashboard
@@ -184,7 +142,6 @@ export default function DashboardPage() {
                 </p>
 
                 <div className="flex gap-3 mt-6 flex-wrap">
-
                   <div
                     className="
                     bg-white/15
@@ -248,7 +205,6 @@ export default function DashboardPage() {
                   >
                     📊 {data?.totalCalculations ?? 0} Sustainability Checkups
                   </div>
-
                 </div>
               </div>
 
@@ -263,17 +219,12 @@ export default function DashboardPage() {
                   }}
                 >
                   <div className="h-44 w-44 rounded-full bg-emerald-600 flex flex-col items-center justify-center">
-                    <span className="text-6xl font-bold">
-                      {score}
-                    </span>
+                    <span className="text-6xl font-bold">{score}</span>
 
-                    <span className="text-sm text-white/80">
-                      Carbon Score
-                    </span>
+                    <span className="text-sm text-white/80">Carbon Score</span>
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
 
@@ -321,9 +272,7 @@ export default function DashboardPage() {
                 "
               >
                 🧮
-                <div className="mt-2">
-                  Calculator
-                </div>
+                <div className="mt-2">Calculator</div>
               </a>
 
               <a
@@ -340,9 +289,7 @@ export default function DashboardPage() {
                 "
               >
                 🎯
-                <div className="mt-2">
-                  Goals
-                </div>
+                <div className="mt-2">Goals</div>
               </a>
 
               <a
@@ -359,9 +306,7 @@ export default function DashboardPage() {
                 "
               >
                 🤖
-                <div className="mt-2">
-                  AI Coach
-                </div>
+                <div className="mt-2">AI Coach</div>
               </a>
 
               <a
@@ -378,9 +323,7 @@ export default function DashboardPage() {
                 "
               >
                 🔮
-                <div className="mt-2">
-                  Scenario
-                </div>
+                <div className="mt-2">Scenario</div>
               </a>
             </div>
           </div>
@@ -406,9 +349,7 @@ export default function DashboardPage() {
               border
               "
             >
-              <p className="text-slate-500">
-                🌍 Average Emission
-              </p>
+              <p className="text-slate-500">🌍 Average Emission</p>
 
               <h2
                 className="
@@ -417,9 +358,7 @@ export default function DashboardPage() {
                 mt-2
                 "
               >
-                {(
-                  data?.averageEmission ?? 0
-                ).toFixed(2)}
+                {(data?.averageEmission ?? 0).toFixed(2)}
               </h2>
 
               <p
@@ -441,9 +380,7 @@ export default function DashboardPage() {
               border
               "
             >
-              <p className="text-slate-500">
-                📈 Latest Emission
-              </p>
+              <p className="text-slate-500">📈 Latest Emission</p>
 
               <h2
                 className="
@@ -452,9 +389,7 @@ export default function DashboardPage() {
                 mt-2
                 "
               >
-                {(
-                  data?.latestEmission ?? 0
-                ).toFixed(2)}
+                {(data?.latestEmission ?? 0).toFixed(2)}
               </h2>
 
               <p
@@ -476,9 +411,7 @@ export default function DashboardPage() {
               border
               "
             >
-              <p className="text-slate-500">
-                🎯 Active Goals
-              </p>
+              <p className="text-slate-500">🎯 Active Goals</p>
 
               <h2
                 className="
@@ -500,9 +433,7 @@ export default function DashboardPage() {
               border
               "
             >
-              <p className="text-slate-500">
-                🌱 Carbon Score
-              </p>
+              <p className="text-slate-500">🌱 Carbon Score</p>
 
               <h2
                 className={`
@@ -558,9 +489,7 @@ export default function DashboardPage() {
               "
             >
               <div>
-                <p className="text-slate-500">
-                  Level
-                </p>
+                <p className="text-slate-500">Level</p>
 
                 <h3
                   className="
@@ -574,9 +503,7 @@ export default function DashboardPage() {
               </div>
 
               <div>
-                <p className="text-slate-500">
-                  Points
-                </p>
+                <p className="text-slate-500">Points</p>
 
                 <h3
                   className="
@@ -585,16 +512,12 @@ export default function DashboardPage() {
                   text-green-600
                   "
                 >
-                  {
-                    gamification.greenPoints
-                  }
+                  {gamification.greenPoints}
                 </h3>
               </div>
 
               <div>
-                <p className="text-slate-500">
-                  Streak
-                </p>
+                <p className="text-slate-500">Streak</p>
 
                 <h3
                   className="
@@ -603,16 +526,12 @@ export default function DashboardPage() {
                   text-orange-500
                   "
                 >
-                  {
-                    gamification.currentStreak
-                  } Days
+                  {gamification.currentStreak} Days
                 </h3>
               </div>
 
               <div>
-                <p className="text-slate-500">
-                  Achievements
-                </p>
+                <p className="text-slate-500">Achievements</p>
 
                 <h3
                   className="
@@ -621,10 +540,7 @@ export default function DashboardPage() {
                   text-blue-600
                   "
                 >
-                  {
-                    gamification.achievements
-                      ?.length ?? 0
-                  }
+                  {gamification.achievements?.length ?? 0}
                 </h3>
               </div>
             </div>
@@ -642,20 +558,15 @@ export default function DashboardPage() {
               mb-8
               "
             >
-              <EmissionTrendChart
-                data={history}
-              />
+              <EmissionTrendChart data={history} />
 
-              <ScoreTrendChart
-                data={history}
-              />
+              <ScoreTrendChart data={history} />
             </div>
           )}
 
           {/* ACHIEVEMENTS */}
 
-          {gamification.achievements
-            .length > 0 && (
+          {gamification.achievements?.length > 0 && (
             <div
               className="
               bg-white
@@ -676,17 +587,12 @@ export default function DashboardPage() {
               </h2>
 
               <div className="space-y-3">
-
                 {gamification.achievements
-                  .slice(0, 5)
-                  .map(
-                    (
-                      achievement,
-                      index
-                    ) => (
-                      <div
-                        key={index}
-                        className="
+                  ?.slice(0, 5)
+                  .map((achievement, index) => (
+                    <div
+                      key={index}
+                      className="
                         bg-green-50
                         border
                         border-green-200
@@ -694,18 +600,14 @@ export default function DashboardPage() {
                         p-4
                         text-green-700
                         "
-                      >
-                        ✅ {achievement}
-                      </div>
-                    )
-                  )}
-
+                    >
+                      ✅ {achievement}
+                    </div>
+                  ))}
               </div>
             </div>
           )}
-
         </div>
-
       </PageContainer>
     </DashboardLayout>
   );
