@@ -51,7 +51,9 @@ export default function AiCoachPage() {
         setHistory([]);
       }
     } catch (error) {
-      console.error(error);
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
     } finally {
       setPageLoading(false);
     }
@@ -73,8 +75,9 @@ export default function AiCoachPage() {
 
       loadHistory();
     } catch (error) {
-      console.error(error);
-
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
       toast.error("Unable to generate advice");
     } finally {
       setLoading(false);

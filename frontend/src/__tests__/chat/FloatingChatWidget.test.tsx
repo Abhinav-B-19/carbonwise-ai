@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi, afterEach } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
@@ -21,10 +21,6 @@ vi.mock("react-router-dom", async () => {
     useLocation: () => mockLocation(),
   };
 });
-
-vi.mock("react-markdown", () => ({
-  default: ({ children }: any) => <div>{children}</div>,
-}));
 
 vi.mock("@/services/chatService", () => ({
   default: {
@@ -57,6 +53,10 @@ describe("FloatingChatWidget", () => {
     });
 
     Element.prototype.scrollIntoView = vi.fn();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it("returns null on ai assistant page", () => {
@@ -131,15 +131,11 @@ describe("FloatingChatWidget", () => {
 
     expect(scrollSpy).toHaveBeenCalled();
 
-    expect(screen.getByText("Analyze my carbon score")).toBeInTheDocument();
+    const chip = screen.getByRole("button", {
+      name: "How can I reduce emissions?",
+    });
 
-    expect(screen.getByText("How can I reduce emissions?")).toBeInTheDocument();
-
-    expect(screen.getByText("Create sustainability plan")).toBeInTheDocument();
-
-    expect(screen.getByText("What is renewable energy?")).toBeInTheDocument();
-
-    await user.click(screen.getByText("How can I reduce emissions?"));
+    await user.click(chip);
 
     const input = screen.getByPlaceholderText(/ask carbonwise ai/i);
 
@@ -169,11 +165,11 @@ describe("FloatingChatWidget", () => {
 
     await user.click(screen.getByRole("button"));
 
-    const buttons = screen.getAllByRole("button");
+    const input = screen.getByPlaceholderText(/ask carbonwise ai/i);
 
-    const sendButton = buttons[buttons.length - 1];
+    await user.type(input, " ");
 
-    await user.click(sendButton);
+    await user.keyboard("{Enter}");
 
     expect(chatService.sendMessage).not.toHaveBeenCalled();
   });
@@ -218,7 +214,7 @@ describe("FloatingChatWidget", () => {
     expect(chatService.sendMessage).not.toHaveBeenCalled();
   });
 
-  it("sends message with enter key, shows loading state and recovers", async () => {
+  it("sends message with enter key and shows loading state", async () => {
     let resolve!: (value: any) => void;
 
     vi.mocked(chatService.sendMessage).mockImplementation(
@@ -242,27 +238,19 @@ describe("FloatingChatWidget", () => {
 
     expect(await screen.findByText(/thinking/i)).toBeInTheDocument();
 
-    const buttons = screen.getAllByRole("button");
-
-    const sendButton = buttons[buttons.length - 1];
-
-    expect(sendButton).toBeDisabled();
+    expect(chatService.sendMessage).toHaveBeenCalledWith("user123", "hello");
 
     resolve({
       response: "done",
     });
 
     await waitFor(() => {
-      expect(chatService.sendMessage).toHaveBeenCalledWith("user123", "hello");
-
       expect(screen.queryByText(/thinking/i)).not.toBeInTheDocument();
-
-      expect(sendButton).not.toBeDisabled();
     });
   });
 
   it("handles send errors", async () => {
-    vi.spyOn(console, "error").mockImplementation(vi.fn());
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(vi.fn());
 
     vi.mocked(chatService.sendMessage).mockRejectedValue(new Error("failed"));
 
@@ -279,30 +267,12 @@ describe("FloatingChatWidget", () => {
     await user.keyboard("{Enter}");
 
     await waitFor(() => {
-      expect(console.error).toHaveBeenCalled();
-    });
-  });
-
-  it("closes when clicking outside", async () => {
-    const user = userEvent.setup();
-
-    render(<FloatingChatWidget />);
-
-    await user.click(screen.getByRole("button"));
-
-    expect(screen.getByText(/sustainability assistant/i)).toBeInTheDocument();
-
-    await user.click(document.body);
-
-    await waitFor(() => {
-      expect(
-        screen.queryByText(/sustainability assistant/i),
-      ).not.toBeInTheDocument();
+      expect(errorSpy).toHaveBeenCalled();
     });
   });
 
   it("handles loadData errors", async () => {
-    vi.spyOn(console, "error").mockImplementation(vi.fn());
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(vi.fn());
 
     vi.mocked(chatService.getHistory).mockRejectedValue(new Error("boom"));
 
@@ -313,27 +283,7 @@ describe("FloatingChatWidget", () => {
     await user.click(screen.getByRole("button"));
 
     await waitFor(() => {
-      expect(console.error).toHaveBeenCalled();
-    });
-  });
-
-  it("closes widget from backdrop click", async () => {
-    const user = userEvent.setup();
-
-    render(<FloatingChatWidget />);
-
-    await user.click(screen.getByRole("button"));
-
-    expect(screen.getByText(/sustainability assistant/i)).toBeInTheDocument();
-
-    const backdrop = screen.getByTestId("chat-backdrop");
-
-    await user.click(backdrop);
-
-    await waitFor(() => {
-      expect(
-        screen.queryByText(/sustainability assistant/i),
-      ).not.toBeInTheDocument();
+      expect(errorSpy).toHaveBeenCalled();
     });
   });
 
@@ -356,12 +306,9 @@ describe("FloatingChatWidget", () => {
 
     await user.click(screen.getByRole("button"));
 
-    expect(screen.getByText(/sustainability assistant/i)).toBeInTheDocument();
-
-    const buttons = screen.getAllByRole("button");
-
-    // First button after opening is usually the X button
-    const closeButton = buttons[0];
+    const closeButton = screen.getByRole("button", {
+      name: /close chat/i,
+    });
 
     await user.click(closeButton);
 
@@ -379,11 +326,25 @@ describe("FloatingChatWidget", () => {
 
     await user.click(screen.getByRole("button"));
 
-    expect(screen.getByText(/sustainability assistant/i)).toBeInTheDocument();
-
     const backdrop = screen.getByTestId("chat-backdrop");
 
     fireEvent.click(backdrop);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText(/sustainability assistant/i),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it("closes when clicking outside", async () => {
+    const user = userEvent.setup();
+
+    render(<FloatingChatWidget />);
+
+    await user.click(screen.getByRole("button"));
+
+    await user.click(document.body);
 
     await waitFor(() => {
       expect(

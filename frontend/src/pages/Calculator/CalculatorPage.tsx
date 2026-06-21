@@ -42,7 +42,9 @@ export default function CalculatorPage() {
         behavior: "smooth",
       });
     } catch (error: any) {
-      console.error(error);
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
 
       toast.error(error?.response?.data?.title ?? "Calculation failed");
     } finally {

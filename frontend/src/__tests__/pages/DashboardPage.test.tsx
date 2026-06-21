@@ -18,6 +18,12 @@ vi.mock("../../services/localStorage", () => ({
   getUserKey: vi.fn(),
 }));
 
+vi.mock("react-router-dom", () => ({
+  Link: ({ children, to }: { children: React.ReactNode; to: string }) => (
+    <a href={to}>{children}</a>
+  ),
+}));
+
 vi.mock("../../components/layout/DashboardLayout", () => ({
   default: ({ children }: any) => <div>{children}</div>,
 }));
@@ -130,7 +136,9 @@ describe("DashboardPage", () => {
 
     expect(screen.getByText("12.00")).toBeInTheDocument();
 
-    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(
+      screen.getByText((_, el) => el?.textContent === "3"),
+    ).toBeInTheDocument();
 
     expect(screen.getByText("85/100")).toBeInTheDocument();
 
@@ -143,16 +151,26 @@ describe("DashboardPage", () => {
     expect(screen.getByText(/Recent Achievements/i)).toBeInTheDocument();
 
     expect(screen.queryByText("A6")).not.toBeInTheDocument();
+
+    expect(screen.getByText("Calculator")).toBeInTheDocument();
+
+    expect(screen.getByText("Goals")).toBeInTheDocument();
+
+    expect(screen.getByText("AI Coach")).toBeInTheDocument();
+
+    expect(screen.getByText("Scenario")).toBeInTheDocument();
+
+    expect(screen.getByText(/Rewards Snapshot/i)).toBeInTheDocument();
   });
 
   it.each([
     [85, "Eco Champion"],
-    [65, "Green Advocate"],
-    [45, "Carbon Aware"],
-    [25, "Eco Beginner"],
-    [10, "Needs Improvement"],
+    [65, "Green Explorer"],
+    [45, "Eco Starter"],
+    [25, "Getting Started"],
+    [10, "Getting Started"],
   ])("renders score level %i -> %s", async (score, label) => {
-    mockSuccess(score, "");
+    mockSuccess(score);
 
     render(<DashboardPage />);
 
@@ -186,15 +204,15 @@ describe("DashboardPage", () => {
 
     expect(screen.getByText("0/100")).toBeInTheDocument();
 
-    expect(screen.getAllByText("0.00").length).toBe(2);
+    expect(screen.getAllByText("0.00")).toHaveLength(2);
 
-    expect(screen.queryByText(/Emission Chart/i)).not.toBeInTheDocument();
+    expect(screen.getByText("Getting Started")).toBeInTheDocument();
 
     expect(screen.queryByText(/Recent Achievements/i)).not.toBeInTheDocument();
   });
 
   it("handles missing user key", async () => {
-    vi.mocked(getUserKey).mockReturnValue(null);
+    vi.mocked(getUserKey).mockReturnValue(null as any);
 
     render(<DashboardPage />);
 
@@ -265,12 +283,17 @@ describe("DashboardPage", () => {
 
     expect(screen.getByText(/Eco Warrior/i)).toBeInTheDocument();
   });
+
   it("uses gamification fallback when response data is undefined", async () => {
     vi.mocked(getUserKey).mockReturnValue("abc");
 
     vi.mocked(api.get)
-      .mockResolvedValueOnce({ data: {} })
-      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce({
+        data: {},
+      })
+      .mockResolvedValueOnce({
+        data: [],
+      })
       .mockResolvedValueOnce(undefined as any);
 
     render(<DashboardPage />);
@@ -284,8 +307,10 @@ describe("DashboardPage", () => {
     vi.mocked(getUserKey).mockReturnValue("abc");
 
     vi.mocked(api.get)
-      .mockResolvedValueOnce(undefined as any) // dashboardResponse
-      .mockResolvedValueOnce({ data: [] }) // historyResponse
+      .mockResolvedValueOnce(undefined as any)
+      .mockResolvedValueOnce({
+        data: [],
+      })
       .mockResolvedValueOnce({
         data: {
           greenPoints: 0,
@@ -300,7 +325,21 @@ describe("DashboardPage", () => {
     await screen.findByText(/Welcome Back/i);
 
     expect(screen.getByText("0/100")).toBeInTheDocument();
+
     expect(screen.getAllByText("0.00")).toHaveLength(2);
-    expect(screen.queryByText(/Recent Achievements/i)).not.toBeInTheDocument();
+
+    expect(screen.getByText("Getting Started")).toBeInTheDocument();
+  });
+
+  it("renders charts with empty history", async () => {
+    mockSuccess(85, "Eco Hero", [], []);
+
+    render(<DashboardPage />);
+
+    await screen.findByText(/Welcome Back/i);
+
+    expect(screen.getByText("Emission Chart:0")).toBeInTheDocument();
+
+    expect(screen.getByText("Score Chart:0")).toBeInTheDocument();
   });
 });

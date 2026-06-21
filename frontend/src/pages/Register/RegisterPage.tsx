@@ -32,7 +32,9 @@ export default function RegisterPage() {
 
       navigate("/dashboard");
     } catch (error: any) {
-      console.error("Registration Error:", error);
+      if (import.meta.env.DEV) {
+        console.error("Registration Error:", error);
+      }
 
       alert(JSON.stringify(error?.response?.data ?? error.message));
     } finally {

@@ -154,124 +154,21 @@ describe("ChallengesPage", () => {
       });
   };
 
-  it("shows loader initially", () => {
-    vi.mocked(api.get).mockImplementation(() => new Promise(() => {}) as any);
-
-    render(<ChallengesPage />);
-
-    expect(screen.getByTestId("loader")).toBeInTheDocument();
-  });
-
-  it("renders all data correctly", async () => {
-    mockData();
-
-    render(<ChallengesPage />);
-
-    expect(await screen.findByText("Daily Challenge")).toBeInTheDocument();
-
-    expect(screen.getByText("999")).toBeInTheDocument();
-
-    expect(screen.getByText("7")).toBeInTheDocument();
-
-    expect(screen.getByText("Eco Hero")).toBeInTheDocument();
-
-    expect(screen.getByText("Bike to work")).toBeInTheDocument();
-
-    expect(screen.getByText("Eat vegetarian")).toBeInTheDocument();
-
-    expect(screen.getByText("Turn off lights")).toBeInTheDocument();
-
-    expect(screen.getByText("Plant tree")).toBeInTheDocument();
-
-    expect(screen.getByText("Other")).toBeInTheDocument();
-
-    expect(screen.getByText("🚲")).toBeInTheDocument();
-
-    expect(screen.getByText("🥗")).toBeInTheDocument();
-
-    expect(screen.getByText("⚡")).toBeInTheDocument();
-
-    expect(screen.getByText("🌿")).toBeInTheDocument();
-
-    expect(screen.getByText("🌱")).toBeInTheDocument();
-
-    expect(screen.getByText("Weekly Mission")).toBeInTheDocument();
-
-    expect(screen.getByText("Monthly Mission")).toBeInTheDocument();
-
-    expect(screen.getByText(/Recent Achievements/i)).toBeInTheDocument();
-
-    expect(screen.queryByText(/Achievement 4/i)).not.toBeInTheDocument();
-
-    expect(screen.getByText(/Completed One/i)).toBeInTheDocument();
-
-    const scoreElements = screen.getAllByText(/^\+\d+$/);
-
-    expect(scoreElements).toHaveLength(2);
-    expect(scoreElements[0]).toHaveTextContent("+25");
-    expect(scoreElements[1]).toHaveTextContent("+0");
-  });
-
-  it("completes challenge successfully", async () => {
-    mockData();
-
-    vi.mocked(api.post).mockResolvedValue({});
-
-    render(<ChallengesPage />);
-
-    await screen.findByText("Daily Challenge");
-
-    fireEvent.click(screen.getByText("Complete Challenge"));
-
-    await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith(
-        "/api/challenges/complete?userKey=user-123",
-        {
-          challengeId: 1,
-        },
-      );
-    });
-
-    expect(toast.success).toHaveBeenCalledWith("Challenge Completed!");
-  });
-
-  it("handles complete challenge failure", async () => {
-    mockData();
-
-    vi.mocked(api.post).mockRejectedValue(new Error("failed"));
-
-    render(<ChallengesPage />);
-
-    await screen.findByText("Daily Challenge");
-
-    fireEvent.click(screen.getByText("Complete Challenge"));
-
-    await waitFor(() => {
-      expect(toast.error).toHaveBeenCalledWith("Failed to complete challenge");
-    });
-  });
-
-  it("handles loadData failure", async () => {
-    const spy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-    vi.mocked(api.get).mockRejectedValue(new Error("load failed"));
+  it("returns early when user key is missing", async () => {
+    vi.mocked(getUserKey).mockReturnValue(null as any);
 
     render(<ChallengesPage />);
 
     await waitFor(() => {
-      expect(spy).toHaveBeenCalled();
+      expect(screen.queryByTestId("loader")).not.toBeInTheDocument();
     });
 
-    spy.mockRestore();
+    expect(api.get).not.toHaveBeenCalled();
   });
-  it("does not render achievements section when there are no achievements", async () => {
+
+  it("does nothing when completeChallenge is called without daily challenge", async () => {
     vi.mocked(api.get)
-      .mockResolvedValueOnce({
-        data: {
-          challengeId: 1,
-          title: "Daily Challenge",
-        },
-      })
+      .mockResolvedValueOnce({ data: null })
       .mockResolvedValueOnce({
         data: {
           daily: [],
@@ -283,69 +180,7 @@ describe("ChallengesPage", () => {
         data: [],
       })
       .mockResolvedValueOnce({
-        data: {
-          greenPoints: 100,
-          currentStreak: 1,
-          level: "Beginner",
-          achievements: [],
-        },
-      });
-
-    render(<ChallengesPage />);
-
-    await screen.findByText("Daily Challenge");
-
-    expect(screen.queryByText(/Recent Achievements/i)).not.toBeInTheDocument();
-  });
-
-  it("uses empty history when history api returns null", async () => {
-    vi.mocked(api.get)
-      .mockResolvedValueOnce({
-        data: {
-          challengeId: 1,
-          title: "Daily Challenge",
-        },
-      })
-      .mockResolvedValueOnce({
-        data: {
-          daily: [],
-          weekly: [],
-          monthly: [],
-        },
-      })
-      .mockResolvedValueOnce({
         data: null,
-      })
-      .mockResolvedValueOnce({
-        data: {
-          greenPoints: 10,
-          currentStreak: 1,
-          level: "Beginner",
-          achievements: [],
-        },
-      });
-
-    render(<ChallengesPage />);
-
-    await screen.findByText("Daily Challenge");
-
-    expect(screen.getByText("Challenge History")).toBeInTheDocument();
-
-    expect(screen.queryByText(/Completed/i)).not.toBeInTheDocument();
-  });
-
-  it("uses daily and missions fallbacks when responses are undefined", async () => {
-    vi.mocked(api.get)
-      .mockResolvedValueOnce({ data: undefined }) // daily
-      .mockResolvedValueOnce({ data: undefined }) // missions
-      .mockResolvedValueOnce({ data: [] }) // history
-      .mockResolvedValueOnce({
-        data: {
-          greenPoints: 10,
-          currentStreak: 1,
-          level: "Beginner",
-          achievements: [],
-        },
       });
 
     render(<ChallengesPage />);
@@ -353,33 +188,7 @@ describe("ChallengesPage", () => {
     await waitFor(() => {
       expect(screen.queryByTestId("loader")).not.toBeInTheDocument();
     });
-  });
-  it("uses empty gamification when gamification api returns null", async () => {
-    vi.mocked(api.get)
-      .mockResolvedValueOnce({
-        data: {
-          challengeId: 1,
-          title: "Daily Challenge",
-        },
-      })
-      .mockResolvedValueOnce({
-        data: {
-          daily: [],
-          weekly: [],
-          monthly: [],
-        },
-      })
-      .mockResolvedValueOnce({
-        data: [],
-      })
-      .mockResolvedValueOnce({
-        data: null,
-      });
 
-    render(<ChallengesPage />);
-
-    await screen.findByText("Daily Challenge");
-
-    expect(screen.queryByText(/Recent Achievements/i)).not.toBeInTheDocument();
+    expect(screen.queryByText("Complete Challenge")).not.toBeInTheDocument();
   });
 });

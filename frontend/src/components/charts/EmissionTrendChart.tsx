@@ -1,3 +1,4 @@
+import React from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -13,18 +14,9 @@ interface Props {
   data: CarbonHistoryItem[];
 }
 
-export default function EmissionTrendChart({ data }: Props) {
+function EmissionTrendChart({ data }: Props) {
   return (
-    <div
-      className="
-      bg-white
-      border
-      border-neutral-200
-      rounded-3xl
-      p-6
-      shadow-sm
-      "
-    >
+    <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm">
       <div className="mb-6">
         <h3 className="text-lg font-semibold tracking-tight">Emission Trend</h3>
 
@@ -75,3 +67,5 @@ export default function EmissionTrendChart({ data }: Props) {
     </div>
   );
 }
+
+export default React.memo(EmissionTrendChart);

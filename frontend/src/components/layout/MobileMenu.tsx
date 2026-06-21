@@ -62,7 +62,9 @@ export default function MobileMenu({ open, onClose }: Props) {
 
       setProfile(response?.data ?? {});
     } catch (error) {
-      console.error("Unable to load profile", error);
+      if (import.meta.env.DEV) {
+        console.error("Unable to load profile", error);
+      }
     }
   };
 

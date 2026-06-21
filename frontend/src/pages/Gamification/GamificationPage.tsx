@@ -23,7 +23,9 @@ export default function GamificationPage() {
 
       setData(response?.data ?? {});
     } catch (error) {
-      console.error("Failed to load gamification", error);
+      if (import.meta.env.DEV) {
+        console.error("Failed to load gamification", error);
+      }
     }
   };
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   LayoutDashboard,
@@ -17,6 +17,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import api from "../../api/api";
 
 import { clearUserKey, getUserName } from "../../services/localStorage";
+import React from "react";
 
 const menuItems = [
   {
@@ -63,26 +64,28 @@ interface UserProfile {
   preferredGoal?: string;
 }
 
-export default function Sidebar() {
+function Sidebar() {
   const navigate = useNavigate();
 
   const userName = getUserName() || "Eco User";
 
   const [profile, setProfile] = useState<UserProfile>();
 
-  useEffect(() => {
-    loadProfile();
-  }, []);
-
-  const loadProfile = async () => {
+  const loadProfile = useCallback(async () => {
     try {
       const response = await api.get("/api/users/profile");
 
       setProfile(response?.data ?? {});
     } catch (error) {
-      console.error("Unable to load profile", error);
+      if (import.meta.env.DEV) {
+        console.error("Unable to load profile", error);
+      }
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
 
   const logout = () => {
     clearUserKey();
@@ -251,3 +254,5 @@ export default function Sidebar() {
     </aside>
   );
 }
+
+export default React.memo(Sidebar);

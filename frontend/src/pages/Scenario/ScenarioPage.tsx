@@ -36,7 +36,9 @@ export default function ScenarioPage() {
 
       toast.success("Simulation completed");
     } catch (error) {
-      console.error(error);
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
 
       toast.error("Simulation failed");
     } finally {

@@ -62,7 +62,9 @@ export default function AiAssistantPage() {
 
       setUsage(usageData);
     } catch (error) {
-      console.error(error);
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
     }
   };
 
@@ -120,7 +122,9 @@ export default function AiAssistantPage() {
 
       loadData();
     } catch (error) {
-      console.error(error);
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
 
       toast.error("Unable to send message");
     } finally {
@@ -150,7 +154,9 @@ export default function AiAssistantPage() {
 
       loadData();
     } catch (error) {
-      console.error(error);
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
 
       toast.error("Unable to clear history");
     }

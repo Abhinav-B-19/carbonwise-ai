@@ -93,7 +93,9 @@ export default function GoalsPage() {
                 status,
               });
             } catch (error) {
-              console.error(error);
+              if (import.meta.env.DEV) {
+                console.error(error);
+              }
             }
           }
 
@@ -107,8 +109,9 @@ export default function GoalsPage() {
 
       setGoals(updatedGoals);
     } catch (error) {
-      console.error(error);
-
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
       toast.error("Unable to load goals");
     } finally {
       setPageLoading(false);
@@ -136,7 +139,9 @@ export default function GoalsPage() {
 
         await loadGoalsAndSync();
       } catch (error) {
-        console.error(error);
+        if (import.meta.env.DEV) {
+          console.error(error);
+        }
 
         toast.error("Unable to create goal");
       } finally {
@@ -162,7 +167,9 @@ export default function GoalsPage() {
 
       await loadGoalsAndSync();
     } catch (error) {
-      console.error(error);
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
 
       toast.error("Unable to delete goal");
     } finally {

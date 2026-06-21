@@ -1,10 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
-import { MessageCircle, X, Send, Sparkles } from "lucide-react";
-
+import { MessageCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-
-import ReactMarkdown from "react-markdown";
 
 import chatService, {
   ChatMessage,
@@ -13,7 +16,12 @@ import chatService, {
 
 import { getUserKey } from "../../services/localStorage";
 
-export default function FloatingChatWidget() {
+import ChatHeader from "./ChatHeader";
+import ChatMessages from "./ChatMessages";
+import ChatInput from "./ChatInput";
+import SuggestionChips from "./SuggestionChips";
+
+function FloatingChatWidget() {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -31,48 +39,17 @@ export default function FloatingChatWidget() {
 
   const [usage, setUsage] = useState<UsageResponse>();
 
-  const suggestions = [
-    "Analyze my carbon score",
-    "How can I reduce emissions?",
-    "Create sustainability plan",
-    "What is renewable energy?",
-  ];
+  const suggestions = useMemo(
+    () => [
+      "Analyze my carbon score",
+      "How can I reduce emissions?",
+      "Create sustainability plan",
+      "What is renewable energy?",
+    ],
+    [],
+  );
 
-  if (location.pathname === "/ai-assistant") {
-    return null;
-  }
-
-  useEffect(() => {
-    if (open) {
-      loadData();
-    }
-  }, [open]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
-  }, [messages]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        open &&
-        chatRef.current &&
-        !chatRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [open]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       const userKey = getUserKey();
 
@@ -89,11 +66,13 @@ export default function FloatingChatWidget() {
 
       setUsage(usageData);
     } catch (error) {
-      console.error(error);
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
     }
-  };
+  }, []);
 
-  const sendMessage = async () => {
+  const sendMessage = useCallback(async () => {
     if (!message.trim()) {
       return;
     }
@@ -137,11 +116,47 @@ export default function FloatingChatWidget() {
 
       await loadData();
     } catch (error) {
-      console.error(error);
+      if (import.meta.env.DEV) {
+        console.error(error);
+      }
     } finally {
       setLoading(false);
     }
-  };
+  }, [message, usage, loadData]);
+
+  if (location.pathname === "/ai-assistant") {
+    return null;
+  }
+
+  useEffect(() => {
+    if (open) {
+      loadData();
+    }
+  }, [open, loadData]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        open &&
+        chatRef.current &&
+        !chatRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [open]);
 
   return (
     <>
@@ -164,7 +179,7 @@ export default function FloatingChatWidget() {
             justify-center
             hover:scale-105
             transition-all
-            "
+          "
         >
           <MessageCircle size={28} />
         </button>
@@ -172,18 +187,16 @@ export default function FloatingChatWidget() {
 
       {open && (
         <>
-          {/* Backdrop */}
           <div
             data-testid="chat-backdrop"
             className="
               fixed
               inset-0
               z-[998]
-              "
+            "
             onClick={() => setOpen(false)}
           />
 
-          {/* Chat Widget */}
           <div
             ref={chatRef}
             className="
@@ -203,133 +216,15 @@ export default function FloatingChatWidget() {
               flex
               flex-col
               overflow-hidden
-              "
+            "
           >
-            {/* HEADER */}
+            <ChatHeader onClose={() => setOpen(false)} />
 
-            <div
-              className="
-                bg-gradient-to-r
-                from-emerald-600
-                to-green-600
-                text-white
-                px-5
-                py-4
-                shrink-0
-                "
-            >
-              <div
-                className="
-                  flex
-                  justify-between
-                  items-start
-                  "
-              >
-                <div
-                  className="
-                    flex
-                    gap-2
-                    "
-                >
-                  <Sparkles size={18} />
-
-                  <div>
-                    <p className="font-semibold">CarbonWise AI</p>
-
-                    <p
-                      className="
-                        text-xs
-                        text-white/80
-                        "
-                    >
-                      Sustainability Assistant
-                    </p>
-                  </div>
-                </div>
-
-                <button onClick={() => setOpen(false)}>
-                  <X size={20} />
-                </button>
-              </div>
-            </div>
-
-            {/* CHAT */}
-
-            <div
-              className="
-                flex-1
-                overflow-y-auto
-                p-4
-                space-y-4
-                bg-slate-50
-                "
-            >
-              {messages.length === 0 && (
-                <div
-                  className="
-                    text-center
-                    text-slate-500
-                    text-sm
-                    mt-12
-                    "
-                >
-                  Ask sustainability, climate, carbon footprint or environmental
-                  questions.
-                </div>
-              )}
-
-              {messages.map((msg, index) => (
-                <div
-                  key={index}
-                  className={
-                    msg.role === "user"
-                      ? "flex justify-end"
-                      : "flex justify-start"
-                  }
-                >
-                  <div
-                    className={`
-                        max-w-[85%]
-                        rounded-2xl
-                        p-3
-                        text-sm
-                        ${
-                          msg.role === "user"
-                            ? `
-                            bg-emerald-600
-                            text-white
-                            shadow-sm
-                            `
-                            : `
-                            bg-white
-                            text-slate-700
-                            border
-                            border-slate-200
-                            shadow-sm
-                            `
-                        }
-                        `}
-                  >
-                    <ReactMarkdown skipHtml>{msg.message}</ReactMarkdown>
-                  </div>
-                </div>
-              ))}
-
-              {loading && (
-                <div
-                  className="
-                    text-sm
-                    text-slate-500
-                    "
-                >
-                  Thinking...
-                </div>
-              )}
-
-              <div ref={messagesEndRef} />
-            </div>
-
-            {/* FOOTER */}
+            <ChatMessages
+              messages={messages}
+              loading={loading}
+              messagesEndRef={messagesEndRef}
+            />
 
             <div
               className="
@@ -337,7 +232,7 @@ export default function FloatingChatWidget() {
                 bg-white
                 p-3
                 shrink-0
-                "
+              "
             >
               {usage && (
                 <div
@@ -346,14 +241,14 @@ export default function FloatingChatWidget() {
                     items-center
                     justify-between
                     mb-3
-                    "
+                  "
                 >
                   <div>
                     <p
                       className="
                         text-xs
                         text-slate-500
-                        "
+                      "
                     >
                       AI Messages Left Today
                     </p>
@@ -363,7 +258,7 @@ export default function FloatingChatWidget() {
                         text-sm
                         font-semibold
                         text-green-600
-                        "
+                      "
                     >
                       {usage.remaining}/{usage.limit}
                     </p>
@@ -382,87 +277,24 @@ export default function FloatingChatWidget() {
                       border-green-200
                       hover:bg-green-100
                       transition
-                      "
+                    "
                   >
                     Open Full Assistant →
                   </button>
                 </div>
               )}
 
-              <div
-                className="
-                  flex
-                  gap-2
-                  overflow-x-auto
-                  mb-3
-                  pb-1
-                  "
-              >
-                {suggestions.map((item) => (
-                  <button
-                    key={item}
-                    onClick={() => setMessage(item)}
-                    className="
-                        whitespace-nowrap
-                        px-3
-                        py-1.5
-                        rounded-full
-                        bg-green-50
-                        text-green-700
-                        border
-                        border-green-200
-                        text-xs
-                        hover:bg-green-100
-                        "
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
+              <SuggestionChips
+                suggestions={suggestions}
+                onSelect={setMessage}
+              />
 
-              <div
-                className="
-                  flex
-                  gap-2
-                  "
-              >
-                <input
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      sendMessage();
-                    }
-                  }}
-                  placeholder="Ask CarbonWise AI..."
-                  className="
-                    flex-1
-                    border
-                    border-slate-300
-                    rounded-xl
-                    px-3
-                    py-2
-                    text-sm
-                    focus:outline-none
-                    focus:ring-2
-                    focus:ring-green-500
-                    "
-                />
-
-                <button
-                  disabled={loading}
-                  onClick={sendMessage}
-                  className="
-                    bg-green-600
-                    text-white
-                    px-3
-                    rounded-xl
-                    disabled:opacity-50
-                    "
-                >
-                  <Send size={16} />
-                </button>
-              </div>
+              <ChatInput
+                message={message}
+                loading={loading}
+                onChange={setMessage}
+                onSend={sendMessage}
+              />
             </div>
           </div>
         </>
@@ -470,3 +302,5 @@ export default function FloatingChatWidget() {
     </>
   );
 }
+
+export default React.memo(FloatingChatWidget);
