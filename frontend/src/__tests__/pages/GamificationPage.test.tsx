@@ -27,7 +27,7 @@ vi.mock("../../components/ui/PageLoader", () => ({
   default: () => <div>Loading...</div>,
 }));
 
-const mockedApi = vi.mocked(api);
+const mockedGet = vi.mocked(api.get);
 
 describe("GamificationPage", () => {
   beforeEach(() => {
@@ -35,7 +35,7 @@ describe("GamificationPage", () => {
   });
 
   it("shows loader initially", () => {
-    mockedApi.get.mockReturnValue(new Promise(() => {}));
+    mockedGet.mockReturnValue(new Promise(() => {}));
 
     render(
       <MemoryRouter>
@@ -47,7 +47,7 @@ describe("GamificationPage", () => {
   });
 
   it("renders gamification data", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {
         greenPoints: 250,
         currentStreak: 12,
@@ -62,7 +62,7 @@ describe("GamificationPage", () => {
       </MemoryRouter>,
     );
 
-    expect(mockedApi.get).toHaveBeenCalledWith(
+    expect(mockedGet).toHaveBeenCalledWith(
       "/api/gamification?userKey=user-123",
     );
 
@@ -80,7 +80,7 @@ describe("GamificationPage", () => {
   });
 
   it("renders green advocate level", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {
         greenPoints: 10,
         currentStreak: 1,
@@ -99,7 +99,7 @@ describe("GamificationPage", () => {
   });
 
   it("renders default level", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {
         greenPoints: 10,
         currentStreak: 1,
@@ -118,7 +118,7 @@ describe("GamificationPage", () => {
   });
 
   it("renders empty achievements state", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {
         greenPoints: 10,
         currentStreak: 1,
@@ -141,7 +141,7 @@ describe("GamificationPage", () => {
 
     spy.mockImplementation(() => {});
 
-    mockedApi.get.mockRejectedValue(new Error("Network Error"));
+    mockedGet.mockRejectedValue(new Error("Network Error"));
 
     render(
       <MemoryRouter>
@@ -157,7 +157,7 @@ describe("GamificationPage", () => {
   });
 
   it("handles undefined achievements", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {
         greenPoints: 10,
         currentStreak: 2,

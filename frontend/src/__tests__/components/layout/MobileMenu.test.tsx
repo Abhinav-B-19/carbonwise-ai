@@ -27,7 +27,7 @@ vi.mock("@/services/localStorage", () => ({
   getUserName: vi.fn(),
 }));
 
-const mockedApi = vi.mocked(api);
+const mockedGet = vi.mocked(api.get);
 const mockedClearUserKey = vi.mocked(clearUserKey);
 const mockedGetUserName = vi.mocked(getUserName);
 
@@ -49,7 +49,7 @@ describe("MobileMenu", () => {
   });
 
   it("renders profile and menu items when open", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {
         userKey: "123",
         name: "Abhinav",
@@ -100,7 +100,7 @@ describe("MobileMenu", () => {
   });
 
   it("calls onClose when close button is clicked", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {},
     });
 
@@ -124,7 +124,7 @@ describe("MobileMenu", () => {
   });
 
   it("clears user and navigates home on logout", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {},
     });
 
@@ -154,7 +154,7 @@ describe("MobileMenu", () => {
   });
 
   it("calls onClose when backdrop is clicked", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {},
     });
 
@@ -184,7 +184,7 @@ describe("MobileMenu", () => {
   it("handles profile load failure", async () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    mockedApi.get.mockRejectedValue(new Error("failed"));
+    mockedGet.mockRejectedValue(new Error("failed"));
 
     render(
       <MemoryRouter>
@@ -193,7 +193,7 @@ describe("MobileMenu", () => {
     );
 
     await waitFor(() => {
-      expect(mockedApi.get).toHaveBeenCalled();
+      expect(mockedGet).toHaveBeenCalled();
     });
 
     expect(errorSpy).toHaveBeenCalled();
@@ -204,7 +204,7 @@ describe("MobileMenu", () => {
   it("renders fallback user name", async () => {
     mockedGetUserName.mockReturnValue(null);
 
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {},
     });
 

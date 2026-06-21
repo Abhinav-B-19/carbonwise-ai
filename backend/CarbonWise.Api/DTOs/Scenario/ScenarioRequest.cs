@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace CarbonWise.Api.DTOs.Scenario;
 
 public class ScenarioRequest

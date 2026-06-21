@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace CarbonWise.Api.DTOs.Users;
 
 public class RegisterUserRequest

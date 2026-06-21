@@ -72,7 +72,7 @@ describe("CalculatorPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    window.scrollTo = vi.fn();
+    vi.stubGlobal("scrollTo", vi.fn());
   });
 
   afterEach(() => {

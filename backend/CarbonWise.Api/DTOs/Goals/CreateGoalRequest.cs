@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace CarbonWise.Api.DTOs.Goals;
 
 public class CreateGoalRequest

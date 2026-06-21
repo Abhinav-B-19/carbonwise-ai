@@ -48,6 +48,7 @@ builder.Services.AddScoped<IAiCoachService, AiCoachService>();
 builder.Services.AddScoped<IAiAssistantService, AiAssistantService>();
 builder.Services.AddScoped<IScenarioService, ScenarioService>();
 builder.Services.AddScoped<IGamificationService, GamificationService>();
+builder.Services.AddScoped<IGeminiService, GeminiService>();
 
 var app = builder.Build();
 

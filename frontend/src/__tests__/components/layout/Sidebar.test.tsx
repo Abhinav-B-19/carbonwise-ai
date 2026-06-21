@@ -29,7 +29,7 @@ vi.mock("@/services/localStorage", () => ({
   getUserName: vi.fn(),
 }));
 
-const mockedApi = vi.mocked(api);
+const mockedGet = vi.mocked(api.get);
 const mockedClearUserKey = vi.mocked(clearUserKey);
 const mockedGetUserName = vi.mocked(getUserName);
 
@@ -41,7 +41,7 @@ describe("Sidebar", () => {
   });
 
   it("renders branding, user name and navigation items", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {},
     });
 
@@ -52,7 +52,7 @@ describe("Sidebar", () => {
     );
 
     await waitFor(() => {
-      expect(mockedApi.get).toHaveBeenCalled();
+      expect(mockedGet).toHaveBeenCalled();
     });
 
     expect(screen.getByText("CarbonWise AI")).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe("Sidebar", () => {
   });
 
   it("loads and displays preferred goal", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {
         userKey: "123",
         name: "Abhinav",
@@ -119,14 +119,14 @@ describe("Sidebar", () => {
     );
 
     await waitFor(() => {
-      expect(mockedApi.get).toHaveBeenCalledWith("/api/users/profile");
+      expect(mockedGet).toHaveBeenCalledWith("/api/users/profile");
     });
 
     expect(screen.getByText("Reduce transport emissions")).toBeInTheDocument();
   });
 
   it("logs out and navigates home", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {},
     });
 
@@ -152,7 +152,7 @@ describe("Sidebar", () => {
   it("handles profile load failure", async () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    mockedApi.get.mockRejectedValue(new Error("failed"));
+    mockedGet.mockRejectedValue(new Error("failed"));
 
     render(
       <MemoryRouter>
@@ -161,7 +161,7 @@ describe("Sidebar", () => {
     );
 
     await waitFor(() => {
-      expect(mockedApi.get).toHaveBeenCalledWith("/api/users/profile");
+      expect(mockedGet).toHaveBeenCalledWith("/api/users/profile");
     });
 
     expect(errorSpy).toHaveBeenCalledWith(
@@ -175,7 +175,7 @@ describe("Sidebar", () => {
   it("renders fallback user name", async () => {
     mockedGetUserName.mockReturnValue(null);
 
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {},
     });
 
@@ -191,7 +191,7 @@ describe("Sidebar", () => {
   });
 
   it("renders active navigation link", async () => {
-    mockedApi.get.mockResolvedValue({
+    mockedGet.mockResolvedValue({
       data: {},
     });
 
@@ -201,7 +201,7 @@ describe("Sidebar", () => {
       </MemoryRouter>,
     );
 
-    await waitFor(() => expect(mockedApi.get).toHaveBeenCalled());
+    await waitFor(() => expect(mockedGet).toHaveBeenCalled());
 
     expect(
       screen.getByRole("link", {
