@@ -44,7 +44,7 @@ public class CarbonController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(userKey))
         {
-            return BadRequest("Missing X-User-Key header");
+            return BadRequest("User key is required.");
         }
 
         var result = await _service.GetHistoryAsync(

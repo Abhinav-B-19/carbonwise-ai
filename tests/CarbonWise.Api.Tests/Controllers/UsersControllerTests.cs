@@ -82,7 +82,7 @@ public class UsersControllerTests
 
         badRequest.StatusCode.Should().Be(400);
         badRequest.Value.Should()
-            .Be("Missing X-User-Key header");
+            .Be("User key is required.");
 
         service.Verify(
             x => x.ValidateUserAsync(
@@ -155,7 +155,7 @@ public class UsersControllerTests
 
         badRequest.StatusCode.Should().Be(400);
         badRequest.Value.Should()
-            .Be("Missing X-User-Key header");
+            .Be("User key is required.");
 
         service.Verify(
             x => x.GetProfileAsync(
