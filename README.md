@@ -180,6 +180,33 @@ Each user receives:
 
 ## 🏗 Architecture
 
+## 📁 Project Structure
+
+```text
+carbonwise-ai
+├── frontend
+│   ├── src
+│   │   ├── api
+│   │   ├── components
+│   │   ├── pages
+│   │   ├── hooks
+│   │   ├── services
+│   │   ├── types
+│   │   ├── utils
+│   │   └── constants
+│   └── tests
+│
+├── backend
+│   ├── Controllers
+│   ├── Services
+│   ├── Models
+│   ├── DTOs
+│   ├── Data
+│   └── Migrations
+│
+└── README.md
+```
+
 ### Frontend
 
 Built using:
@@ -208,6 +235,28 @@ Built using:
 * AI Coaching
 * Scenario Explanations
 
+## 🤖 AI Workflow
+
+```text
+User Input
+     ↓
+Carbon Assessment
+     ↓
+Carbon Score Calculation
+     ↓
+Dashboard Analytics
+     ↓
+AI Sustainability Analysis
+     ↓
+Personalized Recommendations
+     ↓
+Goals & Challenges
+     ↓
+Gamification & Rewards
+     ↓
+Scenario Simulation
+```
+
 ### Infrastructure
 
 Frontend Hosting:
@@ -223,6 +272,31 @@ Database:
 * PostgreSQL
 
 ---
+
+## ⚡ Technical Highlights
+
+- Component-based architecture
+- Strong TypeScript typing
+- Modular service layer
+- Lazy-loaded routes
+- Reusable UI components
+- Memoized computations using useMemo
+- Optimized rendering using React.memo
+- Responsive mobile-first design
+- Comprehensive automated testing
+- Separation of concerns
+
+## 🚀 Performance Optimizations
+
+- Route-based code splitting
+- Production bundle optimization
+- Memoized chart calculations
+- Component memoization
+- Reduced unnecessary re-renders
+- Lightweight production build (<1 MB)
+- Efficient API orchestration using Promise.all
+
+
 
 ## 🔄 User Flow
 
@@ -298,35 +372,60 @@ Users earn:
 
 ---
 
+## 🛠 Local Setup
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Backend
+
+```bash
+cd backend
+dotnet restore
+dotnet run
+```
+
+### Test
+
+```bash
+npm test
+dotnet test
+```
+
 ## 📸 Screenshots
 
 ### Dashboard
 
-(Add Screenshot)
+<img width="1440" height="797" alt="image" src="https://github.com/user-attachments/assets/afd8c38f-372e-4475-bb32-c12c2a10a803" />
 
 ### Carbon Calculator
 
-(Add Screenshot)
+<img width="1440" height="797" alt="image" src="https://github.com/user-attachments/assets/3e00a45d-7ce1-4a9a-b3e0-99027541ec6d" />
 
 ### Goals
 
-(Add Screenshot)
+<img width="1440" height="797" alt="image" src="https://github.com/user-attachments/assets/a59984e9-8455-469a-a342-e61f1b10ef41" />
 
 ### Challenges
 
-(Add Screenshot)
+<img width="1918" height="862" alt="image" src="https://github.com/user-attachments/assets/eb1f70db-6196-457e-88ca-0225ff15404f" />
 
 ### AI Coach
 
-(Add Screenshot)
+<img width="1440" height="797" alt="image" src="https://github.com/user-attachments/assets/acf617a8-278d-4158-b341-4609caf7a974" />
 
 ### Sustainability Simulator
 
-(Add Screenshot)
+<img width="1918" height="872" alt="image" src="https://github.com/user-attachments/assets/e0e70d67-2e2a-4351-b1a8-7d87e2e041b2" />
 
 ### Rewards & Achievements
 
-(Add Screenshot)
+<img width="1918" height="872" alt="image" src="https://github.com/user-attachments/assets/e7861c3c-e40e-4acc-8736-02b80456906f" />
 
 ---
 
