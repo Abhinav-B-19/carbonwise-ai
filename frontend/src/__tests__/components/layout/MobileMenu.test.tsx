@@ -218,4 +218,42 @@ describe("MobileMenu", () => {
       expect(screen.getByText("Eco User")).toBeInTheDocument();
     });
   });
+
+  it("handles undefined API response", async () => {
+    mockedGet.mockResolvedValue(undefined);
+
+    render(
+      <MemoryRouter>
+        <MobileMenu open onClose={vi.fn()} />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(mockedGet).toHaveBeenCalledWith("/api/users/profile");
+    });
+
+    expect(screen.getByText("More Options")).toBeInTheDocument();
+    expect(screen.getByText("Abhinav")).toBeInTheDocument();
+  });
+
+  it("calls onClose when a menu item is clicked", async () => {
+    mockedGet.mockResolvedValue({ data: {} });
+
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+
+    render(
+      <MemoryRouter>
+        <MobileMenu open onClose={onClose} />
+      </MemoryRouter>,
+    );
+
+    await user.click(
+      screen.getByRole("link", {
+        name: /challenges/i,
+      }),
+    );
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
 });

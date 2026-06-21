@@ -267,4 +267,24 @@ describe("CalculatorPage", () => {
 
     expect(await screen.findByText(recommendation)).toBeInTheDocument();
   });
+
+  it("renders no recommendations when response is undefined", async () => {
+    vi.mocked(getUserKey).mockReturnValue("abc");
+
+    vi.mocked(api.post).mockResolvedValue(undefined as any);
+
+    render(<CalculatorPage />);
+
+    fireEvent.click(screen.getByText("Submit"));
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith(
+        "Carbon footprint calculated successfully!",
+      );
+    });
+
+    expect(
+      screen.queryByText("Use public transport more often"),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -175,4 +175,29 @@ describe("GamificationPage", () => {
 
     expect(screen.getByText("0")).toBeInTheDocument();
   });
+
+  it("handles undefined API response", async () => {
+    mockedGet.mockResolvedValue(undefined as any);
+
+    render(
+      <MemoryRouter>
+        <GamificationPage />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(mockedGet).toHaveBeenCalledWith(
+        "/api/gamification?userKey=user-123",
+      );
+    });
+
+    // response?.data ?? {} => {}
+    expect(
+      screen.getByText(
+        "🏆 Complete challenges and sustainability goals to unlock your first achievement.",
+      ),
+    ).toBeInTheDocument();
+
+    expect(screen.getByText("0")).toBeInTheDocument();
+  });
 });

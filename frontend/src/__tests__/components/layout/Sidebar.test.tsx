@@ -209,4 +209,21 @@ describe("Sidebar", () => {
       }),
     ).toHaveAttribute("href", "/dashboard");
   });
+
+  it("handles undefined profile response", async () => {
+    mockedGet.mockResolvedValue(undefined);
+
+    render(
+      <MemoryRouter>
+        <Sidebar />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(mockedGet).toHaveBeenCalledWith("/api/users/profile");
+    });
+
+    expect(screen.getByText("Abhinav")).toBeInTheDocument();
+    expect(screen.queryByText(/Sustainability Focus/i)).not.toBeInTheDocument();
+  });
 });

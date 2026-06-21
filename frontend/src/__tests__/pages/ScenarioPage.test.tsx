@@ -224,4 +224,30 @@ describe("ScenarioPage", () => {
       expect(screen.getByTestId("loading")).toHaveTextContent("false");
     });
   });
+
+  it("handles undefined simulation response", async () => {
+    vi.mocked(api.post).mockResolvedValue(undefined as any);
+
+    render(<ScenarioPage />);
+
+    fireEvent.click(screen.getByText("Submit Success"));
+
+    await waitFor(() => {
+      expect(api.post).toHaveBeenCalledWith(
+        "/api/scenario/simulate?userKey=user-123",
+        {
+          carKmReduction: 10,
+          acHoursReduction: 2,
+          deliveryReduction: 3,
+          switchToVegetarian: true,
+        },
+      );
+    });
+
+    expect(toast.success).toHaveBeenCalledWith("Simulation completed");
+
+    // result becomes {}, so the results view renders,
+    // but there is no improvement badge
+    expect(screen.queryByText(/\+.*Improvement/i)).not.toBeInTheDocument();
+  });
 });

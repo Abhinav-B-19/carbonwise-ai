@@ -333,4 +333,53 @@ describe("ChallengesPage", () => {
 
     expect(screen.queryByText(/Completed/i)).not.toBeInTheDocument();
   });
+
+  it("uses daily and missions fallbacks when responses are undefined", async () => {
+    vi.mocked(api.get)
+      .mockResolvedValueOnce({ data: undefined }) // daily
+      .mockResolvedValueOnce({ data: undefined }) // missions
+      .mockResolvedValueOnce({ data: [] }) // history
+      .mockResolvedValueOnce({
+        data: {
+          greenPoints: 10,
+          currentStreak: 1,
+          level: "Beginner",
+          achievements: [],
+        },
+      });
+
+    render(<ChallengesPage />);
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("loader")).not.toBeInTheDocument();
+    });
+  });
+  it("uses empty gamification when gamification api returns null", async () => {
+    vi.mocked(api.get)
+      .mockResolvedValueOnce({
+        data: {
+          challengeId: 1,
+          title: "Daily Challenge",
+        },
+      })
+      .mockResolvedValueOnce({
+        data: {
+          daily: [],
+          weekly: [],
+          monthly: [],
+        },
+      })
+      .mockResolvedValueOnce({
+        data: [],
+      })
+      .mockResolvedValueOnce({
+        data: null,
+      });
+
+    render(<ChallengesPage />);
+
+    await screen.findByText("Daily Challenge");
+
+    expect(screen.queryByText(/Recent Achievements/i)).not.toBeInTheDocument();
+  });
 });

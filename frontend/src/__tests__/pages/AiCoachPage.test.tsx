@@ -268,4 +268,63 @@ describe("AiCoachPage", () => {
 
     expect(await screen.findByText(/Generate AI advice/)).toBeInTheDocument();
   });
+
+  it("handles undefined generate response data", async () => {
+    vi.mocked(api.get).mockResolvedValue({
+      data: [],
+    });
+
+    vi.mocked(api.post).mockResolvedValue({
+      data: {},
+    } as any);
+
+    render(<AiCoachPage />);
+
+    await screen.findByText(/Generate AI advice/i);
+
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: /Generate New Insight/i,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("AI advice generated");
+    });
+
+    // insight falls back to ""
+    expect(
+      screen.getByText(
+        /Generate AI advice to receive personalized sustainability insights/i,
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it("handles completely undefined generate response", async () => {
+    vi.mocked(api.get).mockResolvedValue({
+      data: [],
+    });
+
+    vi.mocked(api.post).mockResolvedValue(undefined as any);
+
+    render(<AiCoachPage />);
+
+    await screen.findByText(/Generate AI advice/i);
+
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: /Generate New Insight/i,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(toast.success).toHaveBeenCalledWith("AI advice generated");
+    });
+
+    expect(
+      screen.getByText(
+        /Generate AI advice to receive personalized sustainability insights/i,
+      ),
+    ).toBeInTheDocument();
+  });
 });

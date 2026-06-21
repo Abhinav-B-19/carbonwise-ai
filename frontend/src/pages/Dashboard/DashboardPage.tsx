@@ -10,6 +10,10 @@ import ScoreTrendChart from "../../components/charts/ScoreTrendChart";
 import api from "../../api/api";
 
 import { getUserKey } from "../../services/localStorage";
+import type {
+  CarbonCalculationResponse,
+  CarbonHistoryItem,
+} from "@/types/carbon";
 
 interface GamificationResponse {
   greenPoints: number;
@@ -19,9 +23,16 @@ interface GamificationResponse {
 }
 
 export default function DashboardPage() {
-  const [data, setData] = useState<any>(null);
+  interface DashboardData {
+    carbonScore: number;
+    totalCalculations: number;
+    averageEmission: number;
+    latestEmission: number;
+    activeGoals: number;
+  }
 
-  const [history, setHistory] = useState<any[]>([]);
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [history, setHistory] = useState<CarbonHistoryItem[]>([]);
 
   const [gamification, setGamification] = useState<GamificationResponse>({
     greenPoints: 0,

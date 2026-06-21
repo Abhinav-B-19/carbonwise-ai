@@ -133,4 +133,18 @@ describe("GoalCard", () => {
 
     expect(screen.getByText("100%")).toBeInTheDocument();
   });
+
+  it("renders N/A when createdAt is not provided", () => {
+    render(
+      <GoalCard
+        goal={{
+          ...goal,
+          createdAt: undefined,
+        }}
+        onDelete={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText("N/A")).toBeInTheDocument();
+  });
 });

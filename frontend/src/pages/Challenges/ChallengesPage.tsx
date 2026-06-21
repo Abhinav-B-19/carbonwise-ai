@@ -55,7 +55,13 @@ export default function ChallengesPage() {
 
       setDaily(dailyResponse?.data ?? {});
 
-      setMissions(missionsResponse?.data ?? {});
+      setMissions(
+        missionsResponse?.data ?? {
+          daily: [],
+          weekly: [],
+          monthly: [],
+        },
+      );
 
       setHistory(historyResponse?.data ?? []);
 

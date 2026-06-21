@@ -155,4 +155,48 @@ describe("RegisterPage", () => {
 
     expect(screen.getByText(/loading:false/i)).toBeInTheDocument();
   });
+
+  it("saves an empty user key when API response has no userKey", async () => {
+    const user = userEvent.setup();
+
+    (api.post as any).mockResolvedValue({
+      data: {},
+    });
+
+    render(
+      <MemoryRouter>
+        <RegisterPage />
+      </MemoryRouter>,
+    );
+
+    await user.click(screen.getByText("Submit Form"));
+
+    await waitFor(() => {
+      expect(saveUserKey).toHaveBeenCalledWith("");
+    });
+
+    expect(localStorage.getItem("carbonwise_userName")).toBe("Abhinav");
+
+    expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+  });
+
+  it("handles undefined registration response", async () => {
+    const user = userEvent.setup();
+
+    (api.post as any).mockResolvedValue(undefined);
+
+    render(
+      <MemoryRouter>
+        <RegisterPage />
+      </MemoryRouter>,
+    );
+
+    await user.click(screen.getByText("Submit Form"));
+
+    await waitFor(() => {
+      expect(saveUserKey).toHaveBeenCalledWith("");
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith("/dashboard");
+  });
 });

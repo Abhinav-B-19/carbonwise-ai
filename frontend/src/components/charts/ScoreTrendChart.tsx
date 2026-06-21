@@ -7,14 +7,13 @@ import {
   YAxis,
   CartesianGrid,
 } from "recharts";
+import type { CarbonHistoryItem } from "@/types/carbon";
 
 interface Props {
-  data: any[];
+  data: CarbonHistoryItem[];
 }
 
-export default function ScoreTrendChart({
-  data,
-}: Props) {
+export default function ScoreTrendChart({ data }: Props) {
   return (
     <div
       className="
@@ -31,40 +30,21 @@ export default function ScoreTrendChart({
           Carbon Score Trend
         </h3>
 
-        <p className="text-sm text-neutral-500">
-          Improvement over time
-        </p>
+        <p className="text-sm text-neutral-500">Improvement over time</p>
       </div>
 
       <div className="h-80">
         <ResponsiveContainer>
           <AreaChart data={data}>
             <defs>
-              <linearGradient
-                id="scoreGradient"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop
-                  offset="0%"
-                  stopColor="#059669"
-                  stopOpacity={0.4}
-                />
+              <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#059669" stopOpacity={0.4} />
 
-                <stop
-                  offset="100%"
-                  stopColor="#059669"
-                  stopOpacity={0.03}
-                />
+                <stop offset="100%" stopColor="#059669" stopOpacity={0.03} />
               </linearGradient>
             </defs>
 
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="#E5E5E5"
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" />
 
             <XAxis
               dataKey="createdAt"

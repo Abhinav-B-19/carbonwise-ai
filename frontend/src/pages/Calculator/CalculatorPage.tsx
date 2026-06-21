@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
@@ -9,13 +9,14 @@ import ResultCard from "../../components/cards/ResultCard";
 
 import api from "../../api/api";
 import { getUserKey } from "../../services/localStorage";
+import type { CarbonCalculationResponse } from "@/types/carbon";
 
 export default function CalculatorPage() {
   const [loading, setLoading] = useState(false);
 
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<CarbonCalculationResponse | null>(null);
 
-  const calculate = async (formData: any) => {
+  const calculate = useCallback(async (formData: any) => {
     try {
       setLoading(true);
 
@@ -32,7 +33,7 @@ export default function CalculatorPage() {
         },
       });
 
-      setResult(response?.data ?? {});
+      setResult(response?.data ?? null);
 
       toast.success("Carbon footprint calculated successfully!");
 
@@ -47,7 +48,7 @@ export default function CalculatorPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const getScoreLabel = (score: number) => {
     if (score >= 80) return "Excellent";

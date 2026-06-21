@@ -20,6 +20,7 @@ describe("EmissionTrendChart", () => {
     {
       createdAt: "2026-06-20",
       totalEmission: 120,
+      carbonScore: 82,
     },
   ];
 

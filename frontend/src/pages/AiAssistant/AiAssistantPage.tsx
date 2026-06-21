@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
@@ -74,7 +74,7 @@ export default function AiAssistantPage() {
     loadData();
   };
 
-  const sendMessage = async () => {
+  const sendMessage = useCallback(async () => {
     if (!message.trim()) {
       return;
     }
@@ -126,9 +126,9 @@ export default function AiAssistantPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [message, usage]);
 
-  const clearHistory = async () => {
+  const clearHistory = useCallback(async () => {
     const confirmed = window.confirm("Clear entire chat history?");
 
     if (!confirmed) {
@@ -154,7 +154,7 @@ export default function AiAssistantPage() {
 
       toast.error("Unable to clear history");
     }
-  };
+  }, []);
 
   const suggestions = [
     "Analyze my carbon score",

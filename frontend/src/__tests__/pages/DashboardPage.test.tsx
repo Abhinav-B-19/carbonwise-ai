@@ -265,4 +265,42 @@ describe("DashboardPage", () => {
 
     expect(screen.getByText(/Eco Warrior/i)).toBeInTheDocument();
   });
+  it("uses gamification fallback when response data is undefined", async () => {
+    vi.mocked(getUserKey).mockReturnValue("abc");
+
+    vi.mocked(api.get)
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: [] })
+      .mockResolvedValueOnce(undefined as any);
+
+    render(<DashboardPage />);
+
+    await screen.findByText(/Welcome Back/i);
+
+    expect(screen.queryByText(/Recent Achievements/i)).not.toBeInTheDocument();
+  });
+
+  it("uses dashboard fallback when dashboard response is undefined", async () => {
+    vi.mocked(getUserKey).mockReturnValue("abc");
+
+    vi.mocked(api.get)
+      .mockResolvedValueOnce(undefined as any) // dashboardResponse
+      .mockResolvedValueOnce({ data: [] }) // historyResponse
+      .mockResolvedValueOnce({
+        data: {
+          greenPoints: 0,
+          currentStreak: 0,
+          level: "",
+          achievements: [],
+        },
+      });
+
+    render(<DashboardPage />);
+
+    await screen.findByText(/Welcome Back/i);
+
+    expect(screen.getByText("0/100")).toBeInTheDocument();
+    expect(screen.getAllByText("0.00")).toHaveLength(2);
+    expect(screen.queryByText(/Recent Achievements/i)).not.toBeInTheDocument();
+  });
 });

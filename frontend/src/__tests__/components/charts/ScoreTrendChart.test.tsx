@@ -19,6 +19,7 @@ describe("ScoreTrendChart", () => {
   const data = [
     {
       createdAt: "2026-06-20",
+      totalEmission: 120,
       carbonScore: 82,
     },
   ];

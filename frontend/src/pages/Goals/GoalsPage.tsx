@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import toast from "react-hot-toast";
 
@@ -12,8 +12,10 @@ import CreateGoalForm from "../../components/forms/GoalForm";
 
 import { getUserKey } from "../../services/localStorage";
 
+import type { Goal } from "@/types/goal";
+
 export default function GoalsPage() {
-  const [goals, setGoals] = useState<any[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -113,33 +115,36 @@ export default function GoalsPage() {
     }
   };
 
-  const createGoal = async (goalType: string, targetValue: number) => {
-    try {
-      setLoading(true);
+  const createGoal = useCallback(
+    async (goalType: string, targetValue: number) => {
+      try {
+        setLoading(true);
 
-      const userKey = getUserKey();
+        const userKey = getUserKey();
 
-      if (!userKey) {
-        toast.error("User not found");
-        return;
+        if (!userKey) {
+          toast.error("User not found");
+          return;
+        }
+
+        await api.post(`/api/goals?userKey=${userKey}`, {
+          goalType,
+          targetValue,
+        });
+
+        toast.success("Goal created successfully");
+
+        await loadGoalsAndSync();
+      } catch (error) {
+        console.error(error);
+
+        toast.error("Unable to create goal");
+      } finally {
+        setLoading(false);
       }
-
-      await api.post(`/api/goals?userKey=${userKey}`, {
-        goalType,
-        targetValue,
-      });
-
-      toast.success("Goal created successfully");
-
-      await loadGoalsAndSync();
-    } catch (error) {
-      console.error(error);
-
-      toast.error("Unable to create goal");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [],
+  );
 
   const deleteGoal = async (goalId: number) => {
     const confirmed = window.confirm("Delete this goal?");

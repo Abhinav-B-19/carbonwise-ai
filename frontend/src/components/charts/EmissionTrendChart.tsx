@@ -7,14 +7,13 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts";
+import type { CarbonHistoryItem } from "@/types/carbon";
 
 interface Props {
-  data: any[];
+  data: CarbonHistoryItem[];
 }
 
-export default function EmissionTrendChart({
-  data,
-}: Props) {
+export default function EmissionTrendChart({ data }: Props) {
   return (
     <div
       className="
@@ -27,9 +26,7 @@ export default function EmissionTrendChart({
       "
     >
       <div className="mb-6">
-        <h3 className="text-lg font-semibold tracking-tight">
-          Emission Trend
-        </h3>
+        <h3 className="text-lg font-semibold tracking-tight">Emission Trend</h3>
 
         <p className="text-sm text-neutral-500">
           Track your carbon footprint over time
@@ -39,10 +36,7 @@ export default function EmissionTrendChart({
       <div className="h-80">
         <ResponsiveContainer>
           <LineChart data={data}>
-            <CartesianGrid
-              strokeDasharray="3 3"
-              stroke="#E5E5E5"
-            />
+            <CartesianGrid strokeDasharray="3 3" stroke="#E5E5E5" />
 
             <XAxis
               dataKey="createdAt"

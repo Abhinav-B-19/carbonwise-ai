@@ -1,42 +1,47 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 
-import {
-  Routes,
-  Route,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import LandingPage from "./pages/Landing/LandingPage";
-import RegisterPage from "./pages/Register/RegisterPage";
-import DashboardPage from "./pages/Dashboard/DashboardPage";
-import CalculatorPage from "./pages/Calculator/CalculatorPage";
-import GoalsPage from "./pages/Goals/GoalsPage";
-import ChallengesPage from "./pages/Challenges/ChallengesPage";
-import GamificationPage from "./pages/Gamification/GamificationPage";
-import AiCoachPage from "./pages/AiCoach/AiCoachPage";
-import ScenarioPage from "./pages/Scenario/ScenarioPage";
-import AiAssistantPage from "./pages/AiAssistant/AiAssistantPage";
-
+import PageLoader from "./components/ui/PageLoader";
 import ProtectedRoute from "./components/layout/ProtectedRoute";
+
+// Lazy-loaded protected pages
+const RegisterPage = lazy(() => import("./pages/Register/RegisterPage"));
+const DashboardPage = lazy(() => import("./pages/Dashboard/DashboardPage"));
+const CalculatorPage = lazy(() => import("./pages/Calculator/CalculatorPage"));
+const GoalsPage = lazy(() => import("./pages/Goals/GoalsPage"));
+const ChallengesPage = lazy(() => import("./pages/Challenges/ChallengesPage"));
+const GamificationPage = lazy(
+  () => import("./pages/Gamification/GamificationPage"),
+);
+const AiCoachPage = lazy(() => import("./pages/AiCoach/AiCoachPage"));
+const ScenarioPage = lazy(() => import("./pages/Scenario/ScenarioPage"));
+const AiAssistantPage = lazy(
+  () => import("./pages/AiAssistant/AiAssistantPage"),
+);
 
 function App() {
   return (
     <Routes>
-
-      <Route
-        path="/"
-        element={<LandingPage />}
-      />
+      <Route path="/" element={<LandingPage />} />
 
       <Route
         path="/register"
-        element={<RegisterPage />}
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <RegisterPage />
+          </Suspense>
+        }
       />
 
       <Route
         path="/dashboard"
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <Suspense fallback={<PageLoader />}>
+              <DashboardPage />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -45,7 +50,9 @@ function App() {
         path="/calculator"
         element={
           <ProtectedRoute>
-            <CalculatorPage />
+            <Suspense fallback={<PageLoader />}>
+              <CalculatorPage />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -54,7 +61,9 @@ function App() {
         path="/goals"
         element={
           <ProtectedRoute>
-            <GoalsPage />
+            <Suspense fallback={<PageLoader />}>
+              <GoalsPage />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -63,7 +72,9 @@ function App() {
         path="/challenges"
         element={
           <ProtectedRoute>
-            <ChallengesPage />
+            <Suspense fallback={<PageLoader />}>
+              <ChallengesPage />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -72,7 +83,9 @@ function App() {
         path="/scenario"
         element={
           <ProtectedRoute>
-            <ScenarioPage />
+            <Suspense fallback={<PageLoader />}>
+              <ScenarioPage />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -81,7 +94,9 @@ function App() {
         path="/gamification"
         element={
           <ProtectedRoute>
-            <GamificationPage />
+            <Suspense fallback={<PageLoader />}>
+              <GamificationPage />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -90,7 +105,9 @@ function App() {
         path="/ai-coach"
         element={
           <ProtectedRoute>
-            <AiCoachPage />
+            <Suspense fallback={<PageLoader />}>
+              <AiCoachPage />
+            </Suspense>
           </ProtectedRoute>
         }
       />
@@ -99,11 +116,12 @@ function App() {
         path="/ai-assistant"
         element={
           <ProtectedRoute>
-            <AiAssistantPage />
+            <Suspense fallback={<PageLoader />}>
+              <AiAssistantPage />
+            </Suspense>
           </ProtectedRoute>
         }
       />
-
     </Routes>
   );
 }
