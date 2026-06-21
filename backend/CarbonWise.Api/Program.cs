@@ -6,29 +6,39 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Controllers
 builder.Services.AddControllers();
 
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// HttpClient
 builder.Services.AddHttpClient();
 
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("Frontend", policy =>
+    options.AddPolicy("FrontendPolicy", policy =>
     {
         policy
-            .AllowAnyOrigin()
+            .WithOrigins(
+                "http://localhost:5173",
+                "https://carbonwise-koxmgl4ei-abhinav-b-19s-projects.vercel.app"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
 });
 
+// Database
 builder.Services.AddDbContext<CarbonWiseDbContext>(options =>
 {
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICarbonCalculationService, CarbonCalculationService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
@@ -41,21 +51,90 @@ builder.Services.AddScoped<IGamificationService, GamificationService>();
 
 var app = builder.Build();
 
-app.UseSwagger();
-
-app.UseSwaggerUI(options =>
+//
+// Global Exception Handling
+//
+app.UseExceptionHandler(errorApp =>
 {
-    options.SwaggerEndpoint(
-        "/swagger/v1/swagger.json",
-        "CarbonWise API v1");
+    errorApp.Run(async context =>
+    {
+        context.Response.StatusCode =
+            StatusCodes.Status500InternalServerError;
+
+        context.Response.ContentType =
+            "application/json";
+
+        await context.Response.WriteAsJsonAsync(new
+        {
+            message = "An unexpected error occurred."
+        });
+    });
 });
 
+//
+// Security Headers
+//
+app.Use(async (context, next) =>
+{
+    context.Response.Headers["X-Content-Type-Options"] =
+        "nosniff";
+
+    context.Response.Headers["X-Frame-Options"] =
+        "DENY";
+
+    context.Response.Headers["Referrer-Policy"] =
+        "strict-origin-when-cross-origin";
+
+    context.Response.Headers["X-Permitted-Cross-Domain-Policies"] =
+        "none";
+
+    context.Response.Headers["Permissions-Policy"] =
+        "camera=(), microphone=(), geolocation=()";
+
+    await next();
+});
+
+//
+// HSTS
+//
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
+//
+// HTTPS
+//
 app.UseHttpsRedirection();
 
-app.UseCors("Frontend");
+//
+// Swagger
+//
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
 
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint(
+            "/swagger/v1/swagger.json",
+            "CarbonWise API v1");
+    });
+}
+
+//
+// CORS
+//
+app.UseCors("FrontendPolicy");
+
+//
+// Controllers
+//
 app.MapControllers();
 
+//
+// Database Migration & Seed
+//
 using (var scope = app.Services.CreateScope())
 {
     var dbContext =

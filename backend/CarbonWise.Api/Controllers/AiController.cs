@@ -19,6 +19,11 @@ public class AiController : ControllerBase
     public async Task<IActionResult> Coach(
         [FromQuery] string userKey)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
         var result =
             await _service.GenerateAdviceAsync(
                 userKey);
@@ -30,6 +35,11 @@ public class AiController : ControllerBase
     public async Task<IActionResult> History(
         [FromQuery] string userKey)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
         var result =
             await _service.GetHistoryAsync(
                 userKey);

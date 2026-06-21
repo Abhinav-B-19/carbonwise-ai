@@ -19,6 +19,7 @@ public class DashboardService : IDashboardService
         string userKey)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.UserKey == userKey);
 
         if (user == null)
@@ -28,6 +29,7 @@ public class DashboardService : IDashboardService
         }
 
         var entries = await _dbContext.CarbonEntries
+            .AsNoTracking()
             .Where(x => x.UserId == user.Id)
             .OrderByDescending(x => x.CreatedAt)
             .ToListAsync();
@@ -35,11 +37,13 @@ public class DashboardService : IDashboardService
         var latest = entries.FirstOrDefault();
 
         var activeGoals = await _dbContext.Goals
+            .AsNoTracking()
             .CountAsync(x =>
                 x.UserId == user.Id &&
                 x.Status == "Active");
 
         var completedChallenges = await _dbContext.UserChallenges
+            .AsNoTracking()
             .CountAsync(x =>
                 x.UserId == user.Id &&
                 x.Completed);
@@ -74,6 +78,7 @@ public class DashboardService : IDashboardService
         string userKey)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.UserKey == userKey);
 
         if (user == null)
@@ -83,6 +88,7 @@ public class DashboardService : IDashboardService
         }
 
         var entries = await _dbContext.CarbonEntries
+            .AsNoTracking()
             .Where(x => x.UserId == user.Id)
             .OrderBy(x => x.CreatedAt)
             .ToListAsync();

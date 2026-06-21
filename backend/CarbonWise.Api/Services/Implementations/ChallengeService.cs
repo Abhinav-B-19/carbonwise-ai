@@ -20,6 +20,7 @@ public class ChallengeService : IChallengeService
     string userKey)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.UserKey == userKey);
 
         if (user == null)
@@ -29,7 +30,7 @@ public class ChallengeService : IChallengeService
         }
 
         var hasChallenges =
-            await _dbContext.Challenges.AnyAsync();
+            await _dbContext.Challenges.AsNoTracking().AnyAsync();
 
         if (!hasChallenges)
         {
@@ -48,6 +49,7 @@ public class ChallengeService : IChallengeService
 
         var existingAssignment =
             await _dbContext.DailyChallengeAssignments
+                .AsNoTracking()
                 .FirstOrDefaultAsync(x =>
                     x.UserId == user.Id &&
                     x.AssignedDate == today);
@@ -56,6 +58,7 @@ public class ChallengeService : IChallengeService
         {
             var challenge =
                 await _dbContext.Challenges
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(x =>
                         x.Id == existingAssignment.ChallengeId);
 
@@ -78,6 +81,7 @@ public class ChallengeService : IChallengeService
 
         var latestEntry =
             await _dbContext.CarbonEntries
+                .AsNoTracking()
                 .Where(x => x.UserId == user.Id)
                 .OrderByDescending(x => x.CreatedAt)
                 .FirstOrDefaultAsync();
@@ -88,6 +92,7 @@ public class ChallengeService : IChallengeService
         {
             selectedChallenge =
                 await _dbContext.Challenges
+                    .AsNoTracking()
                     .OrderBy(x => x.Id)
                     .FirstOrDefaultAsync();
         }
@@ -110,21 +115,25 @@ public class ChallengeService : IChallengeService
                 {
                     "Transportation" =>
                         await _dbContext.Challenges
+                            .AsNoTracking()
                             .FirstOrDefaultAsync(x =>
                                 x.Title.Contains("Walk")),
 
                     "Home" =>
                         await _dbContext.Challenges
+                            .AsNoTracking()
                             .FirstOrDefaultAsync(x =>
                                 x.Title.Contains("AC")),
 
                     "Food" =>
                         await _dbContext.Challenges
+                            .AsNoTracking()
                             .FirstOrDefaultAsync(x =>
                                 x.Title.Contains("vegetarian")),
 
                     "Lifestyle" =>
                         await _dbContext.Challenges
+                            .AsNoTracking()
                             .FirstOrDefaultAsync(x =>
                                 x.Title.Contains("delivery")),
 
@@ -135,6 +144,7 @@ public class ChallengeService : IChallengeService
             {
                 selectedChallenge =
                     await _dbContext.Challenges
+                        .AsNoTracking()
                         .OrderBy(x => x.Id)
                         .FirstOrDefaultAsync();
             }
@@ -176,6 +186,7 @@ public class ChallengeService : IChallengeService
         int challengeId)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.UserKey == userKey);
 
         if (user == null)
@@ -206,6 +217,7 @@ public class ChallengeService : IChallengeService
         string userKey)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.UserKey == userKey);
 
         if (user == null)
@@ -214,8 +226,8 @@ public class ChallengeService : IChallengeService
         }
 
         return await (
-            from assignment in _dbContext.DailyChallengeAssignments
-            join challenge in _dbContext.Challenges
+            from assignment in _dbContext.DailyChallengeAssignments.AsNoTracking()
+            join challenge in _dbContext.Challenges.AsNoTracking()
                 on assignment.ChallengeId equals challenge.Id
             where assignment.UserId == user.Id
             orderby assignment.AssignedDate descending
@@ -235,6 +247,7 @@ public class ChallengeService : IChallengeService
     {
         var challenges =
             await _dbContext.Challenges
+                .AsNoTracking()
                 .ToListAsync();
 
         return new MissionsResponse

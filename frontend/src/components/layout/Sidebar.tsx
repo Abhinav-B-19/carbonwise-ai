@@ -78,7 +78,7 @@ export default function Sidebar() {
     try {
       const response = await api.get("/api/users/profile");
 
-      setProfile(response.data);
+      setProfile(response?.data ?? {});
     } catch (error) {
       console.error("Unable to load profile", error);
     }

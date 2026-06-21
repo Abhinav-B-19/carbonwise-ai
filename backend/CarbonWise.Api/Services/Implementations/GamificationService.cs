@@ -20,6 +20,7 @@ public class GamificationService
         string userKey)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(x =>
                 x.UserKey == userKey);
 
@@ -32,6 +33,7 @@ public class GamificationService
         var completedChallenges =
             await _dbContext
                 .DailyChallengeAssignments
+                .AsNoTracking()
                 .Where(x =>
                     x.UserId == user.Id &&
                     x.Completed)
@@ -39,12 +41,14 @@ public class GamificationService
 
         var goals =
             await _dbContext.Goals
+                .AsNoTracking()
                 .Where(x =>
                     x.UserId == user.Id)
                 .CountAsync();
 
         var carbonCalculations =
             await _dbContext.CarbonEntries
+                .AsNoTracking()
                 .Where(x =>
                     x.UserId == user.Id)
                 .CountAsync();
@@ -80,6 +84,7 @@ public class GamificationService
         var completedDates =
             await _dbContext
                 .DailyChallengeAssignments
+                .AsNoTracking()
                 .Where(x =>
                     x.UserId == userId &&
                     x.Completed)

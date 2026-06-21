@@ -21,6 +21,7 @@ public class GoalService : IGoalService
         CreateGoalRequest request)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.UserKey == userKey);
 
         if (user == null)
@@ -58,6 +59,7 @@ public class GoalService : IGoalService
         string userKey)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.UserKey == userKey);
 
         if (user == null)
@@ -66,6 +68,7 @@ public class GoalService : IGoalService
         }
 
         return await _dbContext.Goals
+            .AsNoTracking()
             .Where(x => x.UserId == user.Id)
             .OrderByDescending(x => x.CreatedAt)
             .Select(x => new GoalResponse

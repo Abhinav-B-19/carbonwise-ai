@@ -21,6 +21,16 @@ public class ScenarioController : ControllerBase
         [FromQuery] string userKey,
         ScenarioRequest request)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var result =
             await _service.SimulateAsync(
                 userKey,

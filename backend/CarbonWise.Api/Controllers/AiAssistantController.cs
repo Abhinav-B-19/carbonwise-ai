@@ -20,6 +20,11 @@ public class AiAssistantController : ControllerBase
     public async Task<IActionResult> Chat(
         [FromBody] ChatRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         return Ok(
             await _service.SendMessageAsync(request));
     }
@@ -28,6 +33,11 @@ public class AiAssistantController : ControllerBase
     public async Task<IActionResult> History(
         [FromQuery] string userKey)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
         return Ok(
             await _service.GetHistoryAsync(userKey));
     }
@@ -36,6 +46,11 @@ public class AiAssistantController : ControllerBase
     public async Task<IActionResult> Clear(
         [FromQuery] string userKey)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
         await _service.ClearHistoryAsync(userKey);
 
         return Ok();
@@ -45,6 +60,11 @@ public class AiAssistantController : ControllerBase
     public async Task<IActionResult> Usage(
         [FromQuery] string userKey)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
         return Ok(
             await _service.GetUsageAsync(userKey));
     }

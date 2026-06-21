@@ -21,6 +21,16 @@ public class GoalsController : ControllerBase
         [FromQuery] string userKey,
         CreateGoalRequest request)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var result =
             await _service.CreateGoalAsync(
                 userKey,
@@ -33,6 +43,11 @@ public class GoalsController : ControllerBase
     public async Task<IActionResult> GetGoals(
         [FromQuery] string userKey)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
         var result =
             await _service.GetGoalsAsync(
                 userKey);
@@ -45,6 +60,11 @@ public class GoalsController : ControllerBase
         int goalId,
         UpdateGoalRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var result =
             await _service.UpdateGoalAsync(
                 goalId,

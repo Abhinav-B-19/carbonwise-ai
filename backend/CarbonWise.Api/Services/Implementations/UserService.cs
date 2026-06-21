@@ -91,6 +91,7 @@ public class UserService : IUserService
         string userKey)
     {
         var user = await _dbContext.Users
+            .AsNoTracking()
             .FirstOrDefaultAsync(x => x.UserKey == userKey);
 
         if (user == null)

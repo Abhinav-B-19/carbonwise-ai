@@ -6,7 +6,9 @@ export const saveUserKey = (key: string) => {
 };
 
 export const getUserKey = () => {
-  return localStorage.getItem(USER_KEY);
+  const value = localStorage.getItem(USER_KEY)?.trim();
+
+  return value || null;
 };
 
 export const getUserName = () => {

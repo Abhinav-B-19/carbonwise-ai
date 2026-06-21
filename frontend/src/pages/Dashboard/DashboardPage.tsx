@@ -53,11 +53,11 @@ export default function DashboardPage() {
           api.get(`/api/gamification?userKey=${userKey}`),
         ]);
 
-      setData(dashboardResponse.data);
+      setData(dashboardResponse?.data ?? {});
 
-      setHistory(historyResponse.data || []);
+      setHistory(historyResponse?.data ?? []);
 
-      setGamification(gamificationResponse.data);
+      setGamification(gamificationResponse?.data ?? {});
     } catch (error) {
       console.error(error);
     } finally {

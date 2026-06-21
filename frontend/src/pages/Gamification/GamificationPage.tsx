@@ -1,84 +1,63 @@
-import {
-    useEffect,
-    useState,
-  } from "react";
-  
-  import DashboardLayout from "../../components/layout/DashboardLayout";
-  import PageContainer from "../../components/layout/PageContainer";
-  import PageLoader from "../../components/ui/PageLoader";
-  
-  import api from "../../api/api";
-  
-  import {
-    getUserKey,
-  } from "../../services/localStorage";
-  
-  export default function GamificationPage() {
-    const [data, setData] =
-      useState<any>();
-  
-    useEffect(() => {
-      loadGamification();
-    }, []);
-  
-    const loadGamification =
-      async () => {
-        try {
-          const userKey =
-            getUserKey();
-  
-          const response =
-            await api.get(
-              `/api/gamification?userKey=${userKey}`
-            );
-  
-          setData(
-            response.data
-          );
-        } catch (error) {
-          console.error(
-            "Failed to load gamification",
-            error
-          );
-        }
-      };
-  
-    const getLevelDisplay =
-      (level: string) => {
-        switch (
-          level?.toLowerCase()
-        ) {
-          case "eco champion":
-            return `🏆 ${level}`;
-  
-          case "green advocate":
-            return `🌿 ${level}`;
-  
-          default:
-            return `🌱 ${level}`;
-        }
-      };
-  
-      if (!data) {
-        return (
-          <DashboardLayout>
-            <PageContainer>
-              <PageLoader />
-            </PageContainer>
-          </DashboardLayout>
-        );
-      }
-  
+import { useEffect, useState } from "react";
+
+import DashboardLayout from "../../components/layout/DashboardLayout";
+import PageContainer from "../../components/layout/PageContainer";
+import PageLoader from "../../components/ui/PageLoader";
+
+import api from "../../api/api";
+
+import { getUserKey } from "../../services/localStorage";
+
+export default function GamificationPage() {
+  const [data, setData] = useState<any>();
+
+  useEffect(() => {
+    loadGamification();
+  }, []);
+
+  const loadGamification = async () => {
+    try {
+      const userKey = getUserKey();
+
+      const response = await api.get(`/api/gamification?userKey=${userKey}`);
+
+      setData(response?.data ?? {});
+    } catch (error) {
+      console.error("Failed to load gamification", error);
+    }
+  };
+
+  const getLevelDisplay = (level: string) => {
+    switch (level?.toLowerCase()) {
+      case "eco champion":
+        return `🏆 ${level}`;
+
+      case "green advocate":
+        return `🌿 ${level}`;
+
+      default:
+        return `🌱 ${level}`;
+    }
+  };
+
+  if (!data) {
     return (
       <DashboardLayout>
         <PageContainer>
-  
-          <div className="py-8">
-  
-            {/* HERO */}
-  
-            <div
-              className="
+          <PageLoader />
+        </PageContainer>
+      </DashboardLayout>
+    );
+  }
+
+  return (
+    <DashboardLayout>
+      <PageContainer>
+        <div className="py-8">
+          {/* HERO */}
+
+          <div
+            className="
                 bg-gradient-to-r
                 from-emerald-600
                 via-green-600
@@ -88,9 +67,9 @@ import {
                 mb-8
                 shadow-[0_20px_60px_rgba(5,150,105,0.25)]
               "
-            >
-              <div
-                className="
+          >
+            <div
+              className="
                   inline-flex
                   items-center
                   gap-2
@@ -106,40 +85,40 @@ import {
                   font-medium
                   mb-5
                 "
-              >
-                🏆 Rewards & Achievements
-              </div>
+            >
+              🏆 Rewards & Achievements
+            </div>
 
-              <h1
-                style={{ color: "#ffffff" }}
-                className="
+            <h1
+              style={{ color: "#ffffff" }}
+              className="
                   text-5xl
                   font-bold
                   leading-tight
                 "
-              >
-                🏆 Rewards & Achievements
-              </h1>
+            >
+              🏆 Rewards & Achievements
+            </h1>
 
-              <p
-                style={{
-                  color: "rgba(255,255,255,0.9)",
-                }}
-                className="
+            <p
+              style={{
+                color: "rgba(255,255,255,0.9)",
+              }}
+              className="
                   mt-4
                   text-lg
                   max-w-2xl
                   leading-relaxed
                 "
-              >
-                Track your progress towards a greener future.
-              </p>
-            </div>
-  
-            {/* STATS */}
-  
-            <div
-              className="
+            >
+              Track your progress towards a greener future.
+            </p>
+          </div>
+
+          {/* STATS */}
+
+          <div
+            className="
               grid
               grid-cols-1
               md:grid-cols-2
@@ -147,9 +126,9 @@ import {
               gap-6
               mb-8
               "
-            >
-              <div
-                className="
+          >
+            <div
+              className="
                 bg-white
                 rounded-2xl
                 p-6
@@ -157,24 +136,22 @@ import {
                 border
                 border-slate-200
                 "
-              >
-                <p className="text-slate-500">
-                  Green Points
-                </p>
-  
-                <h2
-                  className="
+            >
+              <p className="text-slate-500">Green Points</p>
+
+              <h2
+                className="
                   text-4xl
                   font-bold
                   text-green-600
                   "
-                >
-                  {data.greenPoints}
-                </h2>
-              </div>
-  
-              <div
-                className="
+              >
+                {data.greenPoints}
+              </h2>
+            </div>
+
+            <div
+              className="
                 bg-white
                 rounded-2xl
                 p-6
@@ -182,34 +159,32 @@ import {
                 border
                 border-slate-200
                 "
-              >
-                <p className="text-slate-500">
-                  Current Streak
-                </p>
-  
-                <h2
-                  className="
+            >
+              <p className="text-slate-500">Current Streak</p>
+
+              <h2
+                className="
                   text-4xl
                   font-bold
                   text-orange-500
                   "
-                >
-                  {data.currentStreak}
-                </h2>
-  
-                <p
-                  className="
+              >
+                {data.currentStreak}
+              </h2>
+
+              <p
+                className="
                   text-sm
                   text-slate-500
                   mt-1
                   "
-                >
-                  Days
-                </p>
-              </div>
-  
-              <div
-                className="
+              >
+                Days
+              </p>
+            </div>
+
+            <div
+              className="
                 bg-white
                 rounded-2xl
                 p-6
@@ -217,26 +192,22 @@ import {
                 border
                 border-slate-200
                 "
-              >
-                <p className="text-slate-500">
-                  Level
-                </p>
-  
-                <h2
-                  className="
+            >
+              <p className="text-slate-500">Level</p>
+
+              <h2
+                className="
                   text-2xl
                   font-bold
                   text-purple-600
                   "
-                >
-                  {getLevelDisplay(
-                    data.level
-                  )}
-                </h2>
-              </div>
-  
-              <div
-                className="
+              >
+                {getLevelDisplay(data.level)}
+              </h2>
+            </div>
+
+            <div
+              className="
                 bg-white
                 rounded-2xl
                 p-6
@@ -244,29 +215,25 @@ import {
                 border
                 border-slate-200
                 "
-              >
-                <p className="text-slate-500">
-                  Achievements
-                </p>
-  
-                <h2
-                  className="
+            >
+              <p className="text-slate-500">Achievements</p>
+
+              <h2
+                className="
                   text-4xl
                   font-bold
                   text-blue-600
                   "
-                >
-                  {data
-                    .achievements
-                    ?.length ?? 0}
-                </h2>
-              </div>
+              >
+                {data.achievements?.length ?? 0}
+              </h2>
             </div>
-  
-            {/* ACHIEVEMENTS */}
-  
-            <div
-              className="
+          </div>
+
+          {/* ACHIEVEMENTS */}
+
+          <div
+            className="
               bg-white
               rounded-2xl
               p-6
@@ -274,35 +241,29 @@ import {
               border
               border-slate-200
               "
-            >
-              <h2
-                className="
+          >
+            <h2
+              className="
                 text-2xl
                 font-bold
                 mb-5
                 "
-              >
-                🏅 Achievements
-              </h2>
-  
-              <div
-                className="
+            >
+              🏅 Achievements
+            </h2>
+
+            <div
+              className="
                 flex
                 flex-wrap
                 gap-3
                 "
-              >
-                {data
-                  .achievements
-                  ?.length > 0 ? (
-                  data.achievements.map(
-                    (
-                      achievement: string,
-                      index: number
-                    ) => (
-                      <div
-                        key={index}
-                        className="
+            >
+              {data.achievements?.length > 0 ? (
+                data.achievements.map((achievement: string, index: number) => (
+                  <div
+                    key={index}
+                    className="
                         bg-green-100
                         text-green-700
                         px-4
@@ -310,31 +271,25 @@ import {
                         rounded-full
                         font-medium
                         "
-                      >
-                        {achievement}
-                      </div>
-                    )
-                  )
-                ) : (
-                  <div
-                    className="
+                  >
+                    {achievement}
+                  </div>
+                ))
+              ) : (
+                <div
+                  className="
                     py-6
                     text-slate-500
                     "
-                  >
-                    🏆 Complete
-                    challenges and
-                    sustainability goals
-                    to unlock your
-                    first achievement.
-                  </div>
-                )}
-              </div>
+                >
+                  🏆 Complete challenges and sustainability goals to unlock your
+                  first achievement.
+                </div>
+              )}
             </div>
-  
           </div>
-  
-        </PageContainer>
-      </DashboardLayout>
-    );
-  }
+        </div>
+      </PageContainer>
+    </DashboardLayout>
+  );
+}

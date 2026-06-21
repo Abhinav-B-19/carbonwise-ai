@@ -310,7 +310,7 @@ export default function FloatingChatWidget() {
                         }
                         `}
                   >
-                    <ReactMarkdown>{msg.message}</ReactMarkdown>
+                    <ReactMarkdown skipHtml>{msg.message}</ReactMarkdown>
                   </div>
                 </div>
               ))}

@@ -5,54 +5,37 @@ import { ArrowLeft } from "lucide-react";
 import api from "../../api/api";
 import RegistrationForm from "../../components/forms/RegistrationForm";
 
-import {
-  saveUserKey,
-} from "../../services/localStorage";
+import { saveUserKey } from "../../services/localStorage";
 
 export default function RegisterPage() {
   const navigate = useNavigate();
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
   const register = async (
     name: string,
     email: string,
-    preferredGoal: string
+    preferredGoal: string,
   ) => {
     try {
       setLoading(true);
 
-      const response =
-        await api.post(
-          "/api/users/register",
-          {
-            name,
-            email,
-            preferredGoal,
-          }
-        );
+      const response = await api.post("/api/users/register", {
+        name,
+        email,
+        preferredGoal,
+      });
 
-      saveUserKey(
-        response.data.userKey
-      );
+      saveUserKey(response?.data?.userKey ?? "");
 
-      localStorage.setItem(
-        "carbonwise_userName",
-        name
-      );
+      localStorage.setItem("carbonwise_userName", name);
 
       navigate("/dashboard");
     } catch (error: any) {
-        console.error("Registration Error:", error);
-      
-        alert(
-          JSON.stringify(
-            error?.response?.data ??
-            error.message
-          )
-        );
-      } finally {
+      console.error("Registration Error:", error);
+
+      alert(JSON.stringify(error?.response?.data ?? error.message));
+    } finally {
       setLoading(false);
     }
   };
@@ -81,15 +64,11 @@ export default function RegisterPage() {
         "
       >
         <div className="max-w-md">
-          <h1 className="text-5xl font-bold">
-            CarbonWise AI
-          </h1>
+          <h1 className="text-5xl font-bold">CarbonWise AI</h1>
 
           <p className="mt-4 text-lg opacity-90">
-            Measure your carbon footprint,
-            receive AI-powered insights,
-            complete green challenges and
-            build sustainable habits.
+            Measure your carbon footprint, receive AI-powered insights, complete
+            green challenges and build sustainable habits.
           </p>
         </div>
       </div>
@@ -121,10 +100,7 @@ export default function RegisterPage() {
             Back to Home
           </Link>
 
-          <RegistrationForm
-            loading={loading}
-            onSubmit={register}
-          />
+          <RegistrationForm loading={loading} onSubmit={register} />
         </div>
       </div>
     </div>

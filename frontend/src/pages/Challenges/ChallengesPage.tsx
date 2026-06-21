@@ -1,7 +1,4 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import toast from "react-hot-toast";
 
@@ -13,36 +10,26 @@ import ChallengeCard from "../../components/cards/ChallengeCard";
 
 import api from "../../api/api";
 
-import {
-  getUserKey,
-} from "../../services/localStorage";
+import { getUserKey } from "../../services/localStorage";
 
-import {
-  GamificationResponse,
-} from "../../types/gamification";
+import { GamificationResponse } from "../../types/gamification";
 
 export default function ChallengesPage() {
-  const [daily, setDaily] =
-    useState<any>();
+  const [daily, setDaily] = useState<any>();
 
-  const [history, setHistory] =
-    useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
 
-  const [missions, setMissions] =
-    useState<any>({
-      daily: [],
-      weekly: [],
-      monthly: [],
-    });
+  const [missions, setMissions] = useState<any>({
+    daily: [],
+    weekly: [],
+    monthly: [],
+  });
 
-  const [gamification, setGamification] =
-    useState<GamificationResponse>();
+  const [gamification, setGamification] = useState<GamificationResponse>();
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [pageLoading, setPageLoading] =
-    useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
 
   useEffect(() => {
     loadData();
@@ -52,8 +39,7 @@ export default function ChallengesPage() {
     try {
       setPageLoading(true);
 
-      const userKey =
-        getUserKey();
+      const userKey = getUserKey();
 
       const [
         dailyResponse,
@@ -61,35 +47,19 @@ export default function ChallengesPage() {
         historyResponse,
         gamificationResponse,
       ] = await Promise.all([
-        api.get(
-          `/api/challenges/daily?userKey=${userKey}`
-        ),
-        api.get(
-          "/api/challenges/missions"
-        ),
-        api.get(
-          `/api/challenges/history?userKey=${userKey}`
-        ),
-        api.get(
-          `/api/gamification?userKey=${userKey}`
-        ),
+        api.get(`/api/challenges/daily?userKey=${userKey}`),
+        api.get("/api/challenges/missions"),
+        api.get(`/api/challenges/history?userKey=${userKey}`),
+        api.get(`/api/gamification?userKey=${userKey}`),
       ]);
 
-      setDaily(
-        dailyResponse.data
-      );
+      setDaily(dailyResponse?.data ?? {});
 
-      setMissions(
-        missionsResponse.data
-      );
+      setMissions(missionsResponse?.data ?? {});
 
-      setHistory(
-        historyResponse.data || []
-      );
+      setHistory(historyResponse?.data ?? []);
 
-      setGamification(
-        gamificationResponse.data
-      );
+      setGamification(gamificationResponse?.data ?? {});
     } catch (error) {
       console.error(error);
     } finally {
@@ -97,42 +67,28 @@ export default function ChallengesPage() {
     }
   };
 
-  const completeChallenge =
-    async () => {
-      try {
-        setLoading(true);
+  const completeChallenge = async () => {
+    try {
+      setLoading(true);
 
-        const userKey =
-          getUserKey();
+      const userKey = getUserKey();
 
-        await api.post(
-          `/api/challenges/complete?userKey=${userKey}`,
-          {
-            challengeId:
-              daily.challengeId,
-          }
-        );
+      await api.post(`/api/challenges/complete?userKey=${userKey}`, {
+        challengeId: daily.challengeId,
+      });
 
-        toast.success(
-          "Challenge Completed!"
-        );
+      toast.success("Challenge Completed!");
 
-        await loadData();
-      } catch {
-        toast.error(
-          "Failed to complete challenge"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+      await loadData();
+    } catch {
+      toast.error("Failed to complete challenge");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const getCategoryIcon = (
-    category: string
-  ) => {
-    switch (
-      category?.toLowerCase()
-    ) {
+  const getCategoryIcon = (category: string) => {
+    switch (category?.toLowerCase()) {
       case "transport":
         return "🚲";
 
@@ -163,9 +119,7 @@ export default function ChallengesPage() {
   return (
     <DashboardLayout>
       <PageContainer>
-
         <div className="py-8">
-
           {/* HERO */}
 
           <div
@@ -220,8 +174,7 @@ export default function ChallengesPage() {
 
             <p
               style={{
-                color:
-                  "rgba(255,255,255,0.9)",
+                color: "rgba(255,255,255,0.9)",
               }}
               className="
                 mt-4
@@ -230,13 +183,8 @@ export default function ChallengesPage() {
                 leading-relaxed
               "
             >
-              Complete eco-friendly
-              actions, earn rewards,
-              and improve your
-              sustainability score
-              through engaging
-              sustainability
-              challenges.
+              Complete eco-friendly actions, earn rewards, and improve your
+              sustainability score through engaging sustainability challenges.
             </p>
           </div>
 
@@ -260,9 +208,7 @@ export default function ChallengesPage() {
                 shadow-sm
                 "
               >
-                <p className="text-slate-500">
-                  🌿 Green Points
-                </p>
+                <p className="text-slate-500">🌿 Green Points</p>
 
                 <h2
                   className="
@@ -272,9 +218,7 @@ export default function ChallengesPage() {
                   mt-2
                   "
                 >
-                  {
-                    gamification.greenPoints
-                  }
+                  {gamification.greenPoints}
                 </h2>
               </div>
 
@@ -286,9 +230,7 @@ export default function ChallengesPage() {
                 shadow-sm
                 "
               >
-                <p className="text-slate-500">
-                  🔥 Current Streak
-                </p>
+                <p className="text-slate-500">🔥 Current Streak</p>
 
                 <h2
                   className="
@@ -298,9 +240,7 @@ export default function ChallengesPage() {
                   mt-2
                   "
                 >
-                  {
-                    gamification.currentStreak
-                  }
+                  {gamification.currentStreak}
                 </h2>
               </div>
 
@@ -312,9 +252,7 @@ export default function ChallengesPage() {
                 shadow-sm
                 "
               >
-                <p className="text-slate-500">
-                  🏆 Level
-                </p>
+                <p className="text-slate-500">🏆 Level</p>
 
                 <h2
                   className="
@@ -336,9 +274,7 @@ export default function ChallengesPage() {
             <ChallengeCard
               challenge={daily}
               loading={loading}
-              onComplete={
-                completeChallenge
-              }
+              onComplete={completeChallenge}
             />
           )}
 
@@ -367,13 +303,10 @@ export default function ChallengesPage() {
               gap-5
               "
             >
-              {missions.daily.map(
-                (mission: any) => (
-                  <div
-                    key={
-                      mission.challengeId
-                    }
-                    className="
+              {missions.daily.map((mission: any) => (
+                <div
+                  key={mission.challengeId}
+                  className="
                     bg-white
                     border
                     border-slate-200
@@ -383,23 +316,19 @@ export default function ChallengesPage() {
                     hover:shadow-md
                     transition-all
                     "
-                  >
-                    <div
-                      className="
+                >
+                  <div
+                    className="
                       flex
                       justify-between
                       items-center
                       mb-3
                       "
-                    >
-                      <span>
-                        {getCategoryIcon(
-                          mission.category
-                        )}
-                      </span>
+                  >
+                    <span>{getCategoryIcon(mission.category)}</span>
 
-                      <span
-                        className="
+                    <span
+                      className="
                         text-xs
                         px-3
                         py-1
@@ -407,63 +336,49 @@ export default function ChallengesPage() {
                         bg-green-100
                         text-green-700
                         "
-                      >
-                        {
-                          mission.category
-                        }
-                      </span>
-                    </div>
+                    >
+                      {mission.category}
+                    </span>
+                  </div>
 
-                    <h3
-                      className="
+                  <h3
+                    className="
                       font-bold
                       text-lg
                       "
-                    >
-                      {mission.title}
-                    </h3>
+                  >
+                    {mission.title}
+                  </h3>
 
-                    <p
-                      className="
+                  <p
+                    className="
                       text-slate-500
                       mt-2
                       "
-                    >
-                      {
-                        mission.description
-                      }
-                    </p>
+                  >
+                    {mission.description}
+                  </p>
 
-                    <div
-                      className="
+                  <div
+                    className="
                       flex
                       gap-2
                       mt-4
                       text-sm
                       "
-                    >
-                      <span>
-                        🏆 {
-                          mission.points
-                        }
-                      </span>
+                  >
+                    <span>🏆 {mission.points}</span>
 
-                      <span>
-                        🌍 {
-                          mission.carbonSaved
-                        }kg
-                      </span>
-                    </div>
+                    <span>🌍 {mission.carbonSaved}kg</span>
                   </div>
-                )
-              )}
+                </div>
+              ))}
             </div>
           </div>
 
           {/* WEEKLY MISSIONS */}
 
           <div className="mt-10">
-
             <h2
               className="
               text-2xl
@@ -481,53 +396,43 @@ export default function ChallengesPage() {
               gap-5
               "
             >
-              {missions.weekly.map(
-                (mission: any) => (
-                  <div
-                    key={
-                      mission.challengeId
-                    }
-                    className="
+              {missions.weekly.map((mission: any) => (
+                <div
+                  key={mission.challengeId}
+                  className="
                     bg-orange-50
                     border
                     border-orange-200
                     rounded-2xl
                     p-5
                     "
-                  >
-                    <h3
-                      className="
+                >
+                  <h3
+                    className="
                       font-bold
                       "
-                    >
-                      {mission.title}
-                    </h3>
+                  >
+                    {mission.title}
+                  </h3>
 
-                    <p
-                      className="
+                  <p
+                    className="
                       text-slate-600
                       mt-2
                       "
-                    >
-                      {
-                        mission.description
-                      }
-                    </p>
+                  >
+                    {mission.description}
+                  </p>
 
-                    <div className="mt-3">
-                      🏆 {mission.points}
-                    </div>
-                  </div>
-                )
-              )}
+                  <div className="mt-3">🏆 {mission.points}</div>
+                </div>
+              ))}
             </div>
-
           </div>
 
           {/* MONTHLY MISSIONS */}
 
           <div className="mt-10">
-
             <h2
               className="
               text-2xl
@@ -545,47 +450,38 @@ export default function ChallengesPage() {
               gap-5
               "
             >
-              {missions.monthly.map(
-                (mission: any) => (
-                  <div
-                    key={
-                      mission.challengeId
-                    }
-                    className="
+              {missions.monthly.map((mission: any) => (
+                <div
+                  key={mission.challengeId}
+                  className="
                     bg-purple-50
                     border
                     border-purple-200
                     rounded-2xl
                     p-5
                     "
-                  >
-                    <h3
-                      className="
+                >
+                  <h3
+                    className="
                       font-bold
                       "
-                    >
-                      {mission.title}
-                    </h3>
+                  >
+                    {mission.title}
+                  </h3>
 
-                    <p
-                      className="
+                  <p
+                    className="
                       text-slate-600
                       mt-2
                       "
-                    >
-                      {
-                        mission.description
-                      }
-                    </p>
+                  >
+                    {mission.description}
+                  </p>
 
-                    <div className="mt-3">
-                      🏆 {mission.points}
-                    </div>
-                  </div>
-                )
-              )}
+                  <div className="mt-3">🏆 {mission.points}</div>
+                </div>
+              ))}
             </div>
-
           </div>
 
           {/* ACHIEVEMENTS */}
@@ -613,25 +509,20 @@ export default function ChallengesPage() {
               <div className="space-y-2">
                 {gamification?.achievements
                   ?.slice(0, 3)
-                  .map(
-                    (
-                      achievement,
-                      index
-                    ) => (
-                      <div
-                        key={index}
-                        className="
+                  .map((achievement, index) => (
+                    <div
+                      key={index}
+                      className="
                         bg-green-50
                         text-green-700
                         px-4
                         py-3
                         rounded-xl
                         "
-                      >
-                        ✅ {achievement}
-                      </div>
-                    )
-                  )}
+                    >
+                      ✅ {achievement}
+                    </div>
+                  ))}
               </div>
             </div>
           )}
@@ -639,7 +530,6 @@ export default function ChallengesPage() {
           {/* HISTORY */}
 
           <div className="mt-10">
-
             <h2
               className="
               text-2xl
@@ -651,15 +541,10 @@ export default function ChallengesPage() {
             </h2>
 
             <div className="space-y-4">
-
-              {history.map(
-                (
-                  item,
-                  index
-                ) => (
-                  <div
-                    key={index}
-                    className="
+              {history.map((item, index) => (
+                <div
+                  key={index}
+                  className="
                     bg-white
                     p-5
                     rounded-2xl
@@ -669,31 +554,22 @@ export default function ChallengesPage() {
                     justify-between
                     items-center
                     "
-                  >
-                    <span>
-                      ✅ {item.title}
-                    </span>
+                >
+                  <span>✅ {item.title}</span>
 
-                    <span
-                      className="
+                  <span
+                    className="
                       text-green-600
                       font-semibold
                       "
-                    >
-                      +{
-                        item.points || 0
-                      }
-                    </span>
-                  </div>
-                )
-              )}
-
+                  >
+                    +{item.points || 0}
+                  </span>
+                </div>
+              ))}
             </div>
-
           </div>
-
         </div>
-
       </PageContainer>
     </DashboardLayout>
   );

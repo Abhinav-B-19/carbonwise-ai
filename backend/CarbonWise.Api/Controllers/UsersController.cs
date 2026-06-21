@@ -20,6 +20,11 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> Register(
         RegisterUserRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var result =
             await _userService.RegisterUserAsync(request);
 
@@ -33,8 +38,7 @@ public class UsersController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(userKey))
         {
-            return BadRequest(
-                "Missing X-User-Key header");
+            return BadRequest("User key is required.");
         }
 
         var result =
@@ -51,8 +55,7 @@ public class UsersController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(userKey))
         {
-            return BadRequest(
-                "Missing X-User-Key header");
+            return BadRequest("User key is required.");
         }
 
         var profile =

@@ -20,6 +20,11 @@ public class ChallengesController : ControllerBase
     public async Task<IActionResult> GetDailyChallenge(
         [FromQuery] string userKey)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
         var result =
             await _service.GetDailyChallengeAsync(
                 userKey);
@@ -32,6 +37,16 @@ public class ChallengesController : ControllerBase
         [FromQuery] string userKey,
         CompleteChallengeRequest request)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var success =
             await _service.CompleteChallengeAsync(
                 userKey,
@@ -49,6 +64,11 @@ public class ChallengesController : ControllerBase
     public async Task<IActionResult> GetHistory(
         [FromQuery] string userKey)
     {
+        if (string.IsNullOrWhiteSpace(userKey))
+        {
+            return BadRequest("User key is required.");
+        }
+
         var result =
             await _service.GetHistoryAsync(
                 userKey);

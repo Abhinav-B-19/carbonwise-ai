@@ -1,29 +1,12 @@
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
-import {
-  X,
-  Trophy,
-  Sparkles,
-  Leaf,
-  Award,
-  User,
-  LogOut,
-} from "lucide-react";
+import { X, Trophy, Sparkles, Leaf, Award, User, LogOut } from "lucide-react";
 
-import {
-  NavLink,
-  useNavigate,
-} from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 import api from "../../api/api";
 
-import {
-  clearUserKey,
-  getUserName,
-} from "../../services/localStorage";
+import { clearUserKey, getUserName } from "../../services/localStorage";
 
 interface Props {
   open: boolean;
@@ -60,19 +43,12 @@ const menuItems = [
   },
 ];
 
-export default function MobileMenu({
-  open,
-  onClose,
-}: Props) {
-  const navigate =
-    useNavigate();
+export default function MobileMenu({ open, onClose }: Props) {
+  const navigate = useNavigate();
 
-  const userName =
-    getUserName() ||
-    "Eco User";
+  const userName = getUserName() || "Eco User";
 
-  const [profile, setProfile] =
-    useState<UserProfile>();
+  const [profile, setProfile] = useState<UserProfile>();
 
   useEffect(() => {
     if (open) {
@@ -80,24 +56,15 @@ export default function MobileMenu({
     }
   }, [open]);
 
-  const loadProfile =
-    async () => {
-      try {
-        const response =
-          await api.get(
-            "/api/users/profile"
-          );
+  const loadProfile = async () => {
+    try {
+      const response = await api.get("/api/users/profile");
 
-        setProfile(
-          response.data
-        );
-      } catch (error) {
-        console.error(
-          "Unable to load profile",
-          error
-        );
-      }
-    };
+      setProfile(response?.data ?? {});
+    } catch (error) {
+      console.error("Unable to load profile", error);
+    }
+  };
 
   const logout = () => {
     clearUserKey();
@@ -239,17 +206,15 @@ export default function MobileMenu({
         {/* MENU */}
 
         <div className="space-y-3">
-          {menuItems.map(
-            (item) => {
-              const Icon =
-                item.icon;
+          {menuItems.map((item) => {
+            const Icon = item.icon;
 
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  onClick={onClose}
-                  className="
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path}
+                onClick={onClose}
+                className="
                   flex
                   items-center
                   gap-3
@@ -258,13 +223,12 @@ export default function MobileMenu({
                   bg-slate-50
                   hover:bg-slate-100
                   "
-                >
-                  <Icon size={20} />
-                  {item.name}
-                </NavLink>
-              );
-            }
-          )}
+              >
+                <Icon size={20} />
+                {item.name}
+              </NavLink>
+            );
+          })}
         </div>
 
         {/* LOGOUT */}

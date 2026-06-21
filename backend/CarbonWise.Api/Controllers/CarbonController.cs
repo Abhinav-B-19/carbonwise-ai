@@ -23,7 +23,12 @@ public class CarbonController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(userKey))
         {
-            return BadRequest("Missing X-User-Key header");
+            return BadRequest("User key is required.");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
         }
 
         var result = await _service.CalculateAsync(

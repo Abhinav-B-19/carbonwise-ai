@@ -11,45 +11,30 @@ import api from "../../api/api";
 import { getUserKey } from "../../services/localStorage";
 
 export default function CalculatorPage() {
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [result, setResult] =
-    useState<any>(null);
+  const [result, setResult] = useState<any>(null);
 
-  const calculate = async (
-    formData: any
-  ) => {
+  const calculate = async (formData: any) => {
     try {
       setLoading(true);
 
-      const userKey =
-        getUserKey();
+      const userKey = getUserKey();
 
       if (!userKey) {
-        toast.error(
-          "User not found. Please register again."
-        );
+        toast.error("User not found. Please register again.");
         return;
       }
 
-      const response =
-        await api.post(
-          "/api/carbon/calculate",
-          formData,
-          {
-            headers: {
-              "X-User-Key":
-                userKey,
-            },
-          }
-        );
+      const response = await api.post("/api/carbon/calculate", formData, {
+        headers: {
+          "X-User-Key": userKey,
+        },
+      });
 
-      setResult(response.data);
+      setResult(response?.data ?? {});
 
-      toast.success(
-        "Carbon footprint calculated successfully!"
-      );
+      toast.success("Carbon footprint calculated successfully!");
 
       window.scrollTo({
         top: 0,
@@ -58,171 +43,130 @@ export default function CalculatorPage() {
     } catch (error: any) {
       console.error(error);
 
-      toast.error(
-        error?.response?.data?.title ??
-          "Calculation failed"
-      );
+      toast.error(error?.response?.data?.title ?? "Calculation failed");
     } finally {
       setLoading(false);
     }
   };
 
-  const getScoreLabel = (
-    score: number
-  ) => {
-    if (score >= 80)
-      return "Excellent";
+  const getScoreLabel = (score: number) => {
+    if (score >= 80) return "Excellent";
 
-    if (score >= 60)
-      return "Good";
+    if (score >= 60) return "Good";
 
-    if (score >= 40)
-      return "Moderate";
+    if (score >= 40) return "Moderate";
 
-    if (score >= 20)
-      return "High Impact";
+    if (score >= 20) return "High Impact";
 
     return "Critical";
   };
 
-  const getScoreColor = (
-    score: number
-  ) => {
-    if (score >= 80)
-      return "text-green-600";
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return "text-green-600";
 
-    if (score >= 60)
-      return "text-lime-600";
+    if (score >= 60) return "text-lime-600";
 
-    if (score >= 40)
-      return "text-yellow-500";
+    if (score >= 40) return "text-yellow-500";
 
-    if (score >= 20)
-      return "text-orange-500";
+    if (score >= 20) return "text-orange-500";
 
     return "text-red-600";
   };
 
-  const getScoreEmoji = (
-    score: number
-  ) => {
-    if (score >= 80)
-      return "🟢";
+  const getScoreEmoji = (score: number) => {
+    if (score >= 80) return "🟢";
 
-    if (score >= 60)
-      return "🟢";
+    if (score >= 60) return "🟢";
 
-    if (score >= 40)
-      return "🟡";
+    if (score >= 40) return "🟡";
 
-    if (score >= 20)
-      return "🟠";
+    if (score >= 20) return "🟠";
 
     return "🔴";
   };
 
-  const getProgressBarColor = (
-    score: number
-  ) => {
-    if (score >= 80)
-      return "bg-green-600";
+  const getProgressBarColor = (score: number) => {
+    if (score >= 80) return "bg-green-600";
 
-    if (score >= 60)
-      return "bg-lime-600";
+    if (score >= 60) return "bg-lime-600";
 
-    if (score >= 40)
-      return "bg-yellow-500";
+    if (score >= 40) return "bg-yellow-500";
 
-    if (score >= 20)
-      return "bg-orange-500";
+    if (score >= 20) return "bg-orange-500";
 
     return "bg-red-600";
   };
 
-  const getLargestContributor =
-    () => {
-      if (!result) return null;
+  const getLargestContributor = () => {
+    if (!result) return null;
 
-      const contributors = [
-        {
-          name: "Transportation",
-          value:
-            result.transportationEmission,
-        },
-        {
-          name: "Home",
-          value:
-            result.homeEmission,
-        },
-        {
-          name: "Food",
-          value:
-            result.foodEmission,
-        },
-        {
-          name: "Lifestyle",
-          value:
-            result.lifestyleEmission,
-        },
-      ];
+    const contributors = [
+      {
+        name: "Transportation",
+        value: result.transportationEmission,
+      },
+      {
+        name: "Home",
+        value: result.homeEmission,
+      },
+      {
+        name: "Food",
+        value: result.foodEmission,
+      },
+      {
+        name: "Lifestyle",
+        value: result.lifestyleEmission,
+      },
+    ];
 
-      return contributors.sort(
-        (a, b) =>
-          b.value - a.value
-      )[0];
-    };
+    return contributors.sort((a, b) => b.value - a.value)[0];
+  };
 
-  const getRecommendations =
-    () => {
-      const contributor =
-        getLargestContributor();
+  const getRecommendations = () => {
+    const contributor = getLargestContributor();
 
-      switch (
-        contributor?.name
-      ) {
-        case "Home":
-          return [
-            "Reduce AC usage by 1–2 hours/day",
-            "Switch to LED lighting",
-            "Turn off idle appliances",
-            "Use energy-efficient devices",
-          ];
+    switch (contributor?.name) {
+      case "Home":
+        return [
+          "Reduce AC usage by 1–2 hours/day",
+          "Switch to LED lighting",
+          "Turn off idle appliances",
+          "Use energy-efficient devices",
+        ];
 
-        case "Transportation":
-          return [
-            "Use public transport more often",
-            "Consider carpooling",
-            "Walk or bike for short trips",
-            "Reduce unnecessary travel",
-          ];
+      case "Transportation":
+        return [
+          "Use public transport more often",
+          "Consider carpooling",
+          "Walk or bike for short trips",
+          "Reduce unnecessary travel",
+        ];
 
-        case "Food":
-          return [
-            "Increase plant-based meals",
-            "Reduce food waste",
-            "Buy local produce",
-            "Choose seasonal foods",
-          ];
+      case "Food":
+        return [
+          "Increase plant-based meals",
+          "Reduce food waste",
+          "Buy local produce",
+          "Choose seasonal foods",
+        ];
 
-        case "Lifestyle":
-          return [
-            "Reduce online deliveries",
-            "Combine purchases into fewer orders",
-            "Reuse and recycle products",
-            "Avoid unnecessary packaging",
-          ];
+      case "Lifestyle":
+        return [
+          "Reduce online deliveries",
+          "Combine purchases into fewer orders",
+          "Reuse and recycle products",
+          "Avoid unnecessary packaging",
+        ];
 
-        default:
-          return [];
-      }
-    };
+      default:
+        return [];
+    }
+  };
 
   return (
     <DashboardLayout>
       <PageContainer>
-
         <div className="py-8">
-
           {/* HERO */}
 
           <div
@@ -280,8 +224,8 @@ export default function CalculatorPage() {
                 leading-relaxed
               "
             >
-              Measure your environmental impact and understand your
-              carbon footprint.
+              Measure your environmental impact and understand your carbon
+              footprint.
             </p>
           </div>
 
@@ -301,45 +245,24 @@ export default function CalculatorPage() {
               >
                 <ResultCard
                   title="Transportation"
-                  value={
-                    result.transportationEmission
-                  }
+                  value={result.transportationEmission}
                 />
 
-                <ResultCard
-                  title="Home"
-                  value={
-                    result.homeEmission
-                  }
-                />
+                <ResultCard title="Home" value={result.homeEmission} />
 
-                <ResultCard
-                  title="Food"
-                  value={
-                    result.foodEmission
-                  }
-                />
+                <ResultCard title="Food" value={result.foodEmission} />
 
                 <ResultCard
                   title="Lifestyle"
-                  value={
-                    result.lifestyleEmission
-                  }
+                  value={result.lifestyleEmission}
                 />
 
                 <ResultCard
                   title="Total Emission"
-                  value={
-                    result.totalEmission
-                  }
+                  value={result.totalEmission}
                 />
 
-                <ResultCard
-                  title="Carbon Score"
-                  value={
-                    result.carbonScore
-                  }
-                />
+                <ResultCard title="Carbon Score" value={result.carbonScore} />
               </div>
 
               {/* SCORE ANALYSIS */}
@@ -372,24 +295,15 @@ export default function CalculatorPage() {
                   flex
                   items-center
                   gap-3
-                  ${getScoreColor(
-                    result.carbonScore
-                  )}
+                  ${getScoreColor(result.carbonScore)}
                 `}
                 >
-                  {getScoreLabel(
-                    result.carbonScore
-                  )}
+                  {getScoreLabel(result.carbonScore)}
 
-                  <span>
-                    {getScoreEmoji(
-                      result.carbonScore
-                    )}
-                  </span>
+                  <span>{getScoreEmoji(result.carbonScore)}</span>
                 </div>
 
                 <div className="mt-5">
-
                   <div
                     className="
                     w-full
@@ -404,9 +318,7 @@ export default function CalculatorPage() {
                       h-full
                       transition-all
                       duration-1000
-                      ${getProgressBarColor(
-                        result.carbonScore
-                      )}
+                      ${getProgressBarColor(result.carbonScore)}
                     `}
                       style={{
                         width: `${result.carbonScore}%`,
@@ -421,12 +333,9 @@ export default function CalculatorPage() {
                     text-slate-500
                     "
                   >
-                    Score:
-                    {" "}
-                    {result.carbonScore}
+                    Score: {result.carbonScore}
                     /100
                   </p>
-
                 </div>
 
                 <p
@@ -435,11 +344,8 @@ export default function CalculatorPage() {
                   text-slate-600
                   "
                 >
-                  Higher carbon scores
-                  indicate better
-                  sustainability practices
-                  and lower environmental
-                  impact.
+                  Higher carbon scores indicate better sustainability practices
+                  and lower environmental impact.
                 </p>
               </div>
 
@@ -466,22 +372,9 @@ export default function CalculatorPage() {
                 </h3>
 
                 <p className="text-slate-700">
-                  Your largest contributor is
-                  {" "}
-                  <strong>
-                    {
-                      getLargestContributor()?.name
-                    }
-                  </strong>
-                  {" "}
-                  (
-                  {
-                    getLargestContributor()?.value?.toFixed(
-                      2
-                    )
-                  }
-                  {" "}
-                  kg CO₂e).
+                  Your largest contributor is{" "}
+                  <strong>{getLargestContributor()?.name}</strong> (
+                  {getLargestContributor()?.value?.toFixed(2)} kg CO₂e).
                 </p>
 
                 <div className="mt-4">
@@ -493,20 +386,9 @@ export default function CalculatorPage() {
                     text-slate-700
                     "
                   >
-                    {getRecommendations().map(
-                      (
-                        recommendation,
-                        index
-                      ) => (
-                        <li
-                          key={index}
-                        >
-                          {
-                            recommendation
-                          }
-                        </li>
-                      )
-                    )}
+                    {getRecommendations().map((recommendation, index) => (
+                      <li key={index}>{recommendation}</li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -515,13 +397,8 @@ export default function CalculatorPage() {
 
           {/* FORM */}
 
-          <CarbonCalculatorForm
-            onSubmit={calculate}
-            loading={loading}
-          />
-
+          <CarbonCalculatorForm onSubmit={calculate} loading={loading} />
         </div>
-
       </PageContainer>
     </DashboardLayout>
   );
