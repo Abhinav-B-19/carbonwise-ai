@@ -448,3 +448,75 @@ lcov.info
 .env
 .env.*
 !.env.example
+
+# =========================
+# Frontend Build Artifacts
+# =========================
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/.vite/
+frontend/vitest-report/
+
+# Vite
+*.tsbuildinfo
+
+# =========================
+# Backend Build Artifacts
+# =========================
+**/bin/
+**/obj/
+
+# Test Results
+TestResults/
+**/TestResults/
+
+# Coverage Reports
+coverage/
+coverage-report/
+**/coverage-report/
+**/coverage/
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+lcov.info
+
+# ReportGenerator Output
+Summary.txt
+index.html
+report.css
+main.js
+class.js
+icon_*.svg
+
+# Coverlet files
+coverage.cobertura.xml
+coverage.opencover.xml
+
+# =========================
+# IDE Files
+# =========================
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Rider / Resharper
+.idea/
+_ReSharper*/
+*.DotSettings.user
+
+# =========================
+# Environment Files
+# =========================
+.env
+.env.*
+!.env.example
+
+# Never commit secrets
+appsettings.Development.json
+appsettings.*.json.user

@@ -11,13 +11,16 @@ public class AiCoachService : IAiCoachService
 {
     private readonly CarbonWiseDbContext _dbContext;
     private readonly IConfiguration _configuration;
+    private readonly IGeminiService _geminiService;
 
     public AiCoachService(
         CarbonWiseDbContext dbContext,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IGeminiService geminiService)
     {
         _dbContext = dbContext;
         _configuration = configuration;
+        _geminiService = geminiService;
     }
 
     public async Task<AiCoachResponse> GenerateAdviceAsync(
@@ -47,10 +50,6 @@ public class AiCoachService : IAiCoachService
             .Where(x => x.UserId == user.Id)
             .ToListAsync();
 
-        var apiKey = _configuration["Gemini:ApiKey"];
-
-        var client = new Client(apiKey: apiKey);
-
         var prompt = $"""
 You are a sustainability coach.
 
@@ -76,9 +75,7 @@ Provide:
 Keep under 250 words.
 """;
 
-        var response = await client.Models.GenerateContentAsync("gemini-2.5-flash", prompt);
-
-        var insight = response.Text ?? "No advice generated.";
+        var insight = await _geminiService.GenerateAsync(prompt) ?? "No advice generated.";
 
         var aiInsight = new AiInsight
         {

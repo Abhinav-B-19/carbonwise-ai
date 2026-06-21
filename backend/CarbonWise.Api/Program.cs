@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using CarbonWise.Api.Data;
 using CarbonWise.Api.Services.Implementations;
 using CarbonWise.Api.Services.Interfaces;
@@ -8,9 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddHttpClient();
 
 builder.Services.AddCors(options =>
@@ -75,3 +74,6 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
+
+[ExcludeFromCodeCoverage]
+public partial class Program;

@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <Exclude>
+      [CarbonWise.Api.Migrations.*]*,
+      [Microsoft.AspNetCore.OpenApi.Generated]*,
+      [System.Runtime.CompilerServices]*,
+      [Program]*
+    </Exclude>
+
+    <ExcludeByFile>
+      **/Migrations/*.cs;
+      **/Program.cs
+    </ExcludeByFile>
+  </PropertyGroup>
+</Project>

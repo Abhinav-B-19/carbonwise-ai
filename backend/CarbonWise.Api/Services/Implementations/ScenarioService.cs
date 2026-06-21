@@ -2,21 +2,20 @@ using CarbonWise.Api.Data;
 using CarbonWise.Api.DTOs.Scenario;
 using CarbonWise.Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Google.GenAI;
 
 namespace CarbonWise.Api.Services.Implementations;
 
 public class ScenarioService : IScenarioService
 {
     private readonly CarbonWiseDbContext _dbContext;
-    private readonly IConfiguration _configuration;
+    private readonly IGeminiService _gemini;
 
     public ScenarioService(
         CarbonWiseDbContext dbContext,
-        IConfiguration configuration)
+        IGeminiService gemini)
     {
         _dbContext = dbContext;
-        _configuration = configuration;
+        _gemini = gemini;
     }
 
     public async Task<ScenarioResponse> SimulateAsync(
@@ -102,17 +101,6 @@ public class ScenarioService : IScenarioService
     {
         try
         {
-            var apiKey = _configuration["Gemini:ApiKey"];
-
-            if (string.IsNullOrWhiteSpace(apiKey))
-            {
-                return
-                    $"Your projected carbon score improves from {currentScore} to {projectedScore}. " +
-                    $"You could reduce emissions by {(currentEmission - projectedEmission):F2}.";
-            }
-
-            var client = new Client(apiKey: apiKey);
-
             var reduction =
                 Math.Round(
                     currentEmission - projectedEmission,
@@ -146,12 +134,11 @@ public class ScenarioService : IScenarioService
     Keep the response under 150 words.
     """;
 
-            var response =
-                await client.Models.GenerateContentAsync(
-                    "gemini-2.5-flash",
-                    prompt);
+            var explanation =
+     await _gemini.GenerateAsync(
+         prompt);
 
-            return response.Text ??
+            return explanation ??
                 $"Your projected carbon score improves from {currentScore} to {projectedScore}.";
         }
         catch

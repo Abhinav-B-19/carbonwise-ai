@@ -13,13 +13,16 @@ public class AiAssistantService : IAiAssistantService
 
     private readonly CarbonWiseDbContext _dbContext;
     private readonly IConfiguration _configuration;
+    private readonly IGeminiService _geminiService;
 
     public AiAssistantService(
         CarbonWiseDbContext dbContext,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IGeminiService geminiService)
     {
         _dbContext = dbContext;
         _configuration = configuration;
+        _geminiService = geminiService;
     }
 
     public async Task<ChatResponse> SendMessageAsync(
@@ -144,20 +147,10 @@ User Question:
 {request.Message}
 """;
 
-        var apiKey =
-            _configuration["Gemini:ApiKey"];
-
-        var client =
-            new Client(apiKey: apiKey);
-
-        var geminiResponse =
-            await client.Models.GenerateContentAsync(
-                "gemini-2.5-flash",
-                prompt);
-
         var assistantResponse =
-            geminiResponse.Text ??
-            "Sorry, I couldn't generate a response.";
+            await _geminiService
+                .GenerateAsync(prompt)
+            ?? "Sorry, I couldn't generate a response.";
 
         _dbContext.ChatMessages.Add(
             new ChatMessage
