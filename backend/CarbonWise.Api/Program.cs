@@ -22,10 +22,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendPolicy", policy =>
     {
         policy
-            .WithOrigins(
-                "http://localhost:5173",
-                "https://carbonwise-koxmgl4ei-abhinav-b-19s-projects.vercel.app"
-            )
+            .SetIsOriginAllowed(origin =>
+                origin.Contains(".vercel.app") ||
+                origin == "http://localhost:5173")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
