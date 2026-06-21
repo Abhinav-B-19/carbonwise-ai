@@ -111,17 +111,16 @@ app.UseHttpsRedirection();
 //
 // Swagger
 //
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
+app.UseSwagger();
 
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint(
-            "/swagger/v1/swagger.json",
-            "CarbonWise API v1");
-    });
-}
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint(
+        "/swagger/v1/swagger.json",
+        "CarbonWise API v1");
+
+    options.RoutePrefix = "swagger";
+});
 
 //
 // CORS
